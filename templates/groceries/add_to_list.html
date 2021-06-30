@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+<div class='content-section'>
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class='form-group'>
+            <legend class="border-bottom mb-4">Choose from the Recipes Below {{ object.pk }}</legend>
+            {{ recipe_form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class='btn btn-outline-info' type='submit'>Add Another Recipe to the List</button>
+        </div>
+    </form>
+</div>
+<div class='content-section'>
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class='form-group'>
+            <legend class="border-bottom mb-4">Add an Item to the List</legend>
+            {{ item_form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class='btn btn-outline-info' type='submit'>Add Another Item to the List</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+{% block content2 %}
+<h1>{{ list_name }}</h1>
+<h3>Recipes</h3>
+{% for recipe in recipe_list %}
+<li>{{ recipe }}</li>
+{% endfor %}
+<br>
+<h3>Grocery List</h3>
+{% for item in ingredients.values %}
+<li>{{ item }}</li>
+{% endfor %}
+{% if list_name.pk %}
+<br><a href="{% url 'print_list' pk=list_name.pk %}" class="btn btn-outline-info">Print this list</a>
+{% endif %}
+{% endblock %}

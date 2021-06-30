@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+<div class='content-section'>
+    <h2>All of the Units of Measurement</h2>
+    {% for unit in object_list %}
+    <div class="table" style="border-style: solid;border-width: 3px;border-color: black;"><br>
+        <h3>{{ unit }}</h3>
+        <a class="btn btn-secondary" style="background-color: red;" href="{% url 'unit_delete' pk=unit.pk %}">Delete
+            {{unit}}</a>
+        <a class="btn btn-secondary" style="background-color: rgb(10, 124, 0);"
+            href="{% url 'unit_update' pk=unit.pk %}">Update
+            {{unit}}</a>
+    </div>
+    {% endfor %}
+    <a class="btn btn-secondary" href="{% url 'home_admin' %}">Back</a>
+
+</div>
+
+{% endblock %}

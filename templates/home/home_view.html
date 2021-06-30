@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    <h3>Home</h3>
+    <div>
+        <br> <a class="btn btn-secondary" href="{% url 'choose_list' %}">Make or Change a Grocery List</a><br>
+    </div>
+
+</div>
+
+{% endblock %}
+{% block content2 %}
+<div>
+    <h3>Recipe Components</h3>
+    <div><br><a class="btn btn-secondary" href="{% url 'home_admin' %}">Add things to the database</a><br>
+        <br> <a class="btn btn-secondary" href="{% url 'start_recipe' %}">Add a recipe to the database</a><br>
+        <br> <a class="btn btn-secondary" href="{% url 'recipe_list' %}">View all Recipes</a><br>
+    </div>
+
+</div>
+{% endblock %}

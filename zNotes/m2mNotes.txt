@@ -1,0 +1,7 @@
+m2m allows for saving many objects to a single object. In this app, m2m is saving recipe and food objects to a grocery list object
+
+Start in the model with ManyToManyField. related is supposed to help with data retrevial, but it doesn't seem necessary
+
+You will likey have to write a funciton in the model to handle the m2m data
+
+In this app, the function to sort the m2m data is called make_list. It is used in the groceries/views.py file

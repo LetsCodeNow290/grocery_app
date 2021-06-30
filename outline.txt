@@ -1,0 +1,26 @@
+Recipe attributes:(In recipe app)
+    - recipe_name
+    - recipe_category: inherit from RecipeCatagory
+
+Ingredient attributes:(in recipe app)
+    - ingredient_name: inherit from Food
+    - linked_recipe: inherit from Recipe
+    - ingredient_quantity
+    - quantity_unit: inherit from Unit
+
+Unit attributes:(in component app)
+    - unit_name
+
+Food attributes:(in component app)
+    - food_name
+    - food_category: inherit from FoodCatagory
+    - food_aisle
+
+RecipeCatagory:(in component app)
+    - recipe_category_name
+
+FoodCatagory:(in component app)
+    - food_category_name
+
+Aisle:(in component app)
+    - aisle_name

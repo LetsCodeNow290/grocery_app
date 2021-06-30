@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+    a:link {
+        color: black;
+        background-color: transparent;
+        text-decoration: none;
+    }
+
+    a:visited {
+        color: black;
+        background-color: transparent;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: red;
+        background-color: transparent;
+        text-decoration: underline;
+    }
+</style>
+
+
+<div class='content-section'>
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class='form-group'>
+            <legend class="border-bottom mb-4">Start a New Grocery List Here</legend>
+            {{ new_list_form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class='btn btn-outline-info' type='submit'>Submit</button>
+        </div>
+    </form>
+</div>
+<div>
+    <h1>OR</h1><br>
+    <h3>Add to one of these Previous Lists</h3>
+    {% for list in list_of_lists %}
+    <ul>
+        <li>
+            <a href="{% url 'add_to_list' pk=list.pk %}">{{ list }}</a>
+        </li>
+    </ul>
+    {% endfor %}
+</div>
+
+{% endblock %}

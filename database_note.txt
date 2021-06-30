@@ -1,0 +1,3 @@
+Clear database - python manage.py flush
+Copy databse - python manage.py dumpdata > file.json
+Load databse - python manage.py loaddata file.json

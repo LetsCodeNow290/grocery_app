@@ -1,0 +1,9 @@
+getting pk into the URL from a function view:
+    start in the view. See groceries/choose_list view
+    Next, go to the html file and define the pk in the anchor tag that points to a specific object. see groceries/choose_list.html
+    Lastly, go to urls.py and add /<int:pk>/ in the url path to the object
+
+getting pk into the URL from a class based view (much eaiser):
+    no need to do anything in the view
+    Start in the html file and define the pk in the anchor tag that points to a specific object. See components/aisle_list.html
+    Lastly, go to urls.py and add /<int:pk>/ in the url path to the object
