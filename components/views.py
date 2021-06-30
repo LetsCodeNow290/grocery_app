@@ -2,13 +2,6 @@ from django.shortcuts import render
 from .models import *
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-# for function based pagination, use the import below
-# from django.core.paginator import Paginator
-# use case: paginator_var = Paginator(Model.objects.all(), 4(items))
-#   set up each page with page = request.GET.get('page')
-#   put it all together with paged_paginator_var = paginator_var.get_page('page')
-# replace context with the paged_paginator_var
-
 
 class AddFood(CreateView):
     model = Food
@@ -32,6 +25,7 @@ class UpdateFood(UpdateView):
 class ListFood(ListView):
     model = Food
     template_name_suffix = '_list'
+    paginate_by = 5
 
 
 class DetailFood(DetailView):
@@ -61,6 +55,7 @@ class UpdateUnit(UpdateView):
 class ListUnit(ListView):
     model = MeasuringUnit
     template_name_suffix = '_list'
+    paginate_by = 5
 
 
 class AddRecipeCategory(CreateView):
@@ -85,6 +80,7 @@ class UpdateRecipeCategory(UpdateView):
 class ListRecipeCategory(ListView):
     model = RecipeCategory
     template_name_suffix = '_list'
+    paginate_by = 5
 
 
 class AddFoodCategory(CreateView):
@@ -109,6 +105,7 @@ class UpdateFoodCategory(UpdateView):
 class ListFoodCategory(ListView):
     model = FoodCategory
     template_name_suffix = '_list'
+    paginate_by = 5
 
 
 class AddRecipeBook(CreateView):
@@ -133,6 +130,7 @@ class DeleteRecipeBook(DeleteView):
 class ListRecipeBook(ListView):
     model = RecipeBook
     template_name_suffix = '_list'
+    paginate_by = 5
 
 
 class UpdateAisle(UpdateView):

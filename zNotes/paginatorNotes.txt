@@ -1,0 +1,30 @@
+start in the view
+
+Function view:
+    import below
+    from django.core.paginator import Paginator
+    use case:  
+        make a paginator with "paginator_var = Paginator(Model.objects.all(), 4(items))"
+        set up each page with "page = request.GET.get('page')"
+        put it all together with "paged_paginator_var = paginator_var.get_page('page')"
+        replace context with the paged_paginator_var
+
+Class view:
+    add "paginate_by = number" as an attribute
+
+Template:
+
+From Function:
+    use your context name as base
+
+From Class:
+    use page_obj as base
+
+        attributes of the paginator object:
+            - .has_previous
+            - .has_next
+            - .number (current page)
+            - .paginator.page_range
+            - .paginator.num_pages
+            - .previous_page_number
+            - .next_page_number
