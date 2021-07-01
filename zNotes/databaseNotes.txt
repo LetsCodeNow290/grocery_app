@@ -1,3 +1,10 @@
 Clear database - python manage.py flush
 Copy databse - python manage.py dumpdata > file.json
 Load databse - python manage.py loaddata file.json
+
+If "Could not load contenttypes.ContentType(pk=15): UNIQUE constraint failed: django_content_type.app_label, django_content_type.model" error while loading data from json, open a django shell and import the following:
+from django.contrib.contenttypes.models import ContentType
+execute the following:
+ContentType.objects.all().delete()
+then quit the shell. 
+It should load after that
