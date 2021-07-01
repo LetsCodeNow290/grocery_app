@@ -8,8 +8,8 @@ Make sure pip is installed (pip --verison)
 With pip, install venv with (pip install venv)
 Create and navigate to working directory. (Example: C:\Users\username\WorkingDirectory\)
 In the working directory, create a directory for the django project
-Place all of the files from github in the django project directory
-Next, in the working directory, create a virtual environment for this project with (python -m venv .)
+Navigate to django project directory and clone the git repo (git clone https://github.com/LetsCodeNow290/grocery_app.git)
+Next, back in the working directory, create a virtual environment for this project with (python -m venv .)
 Activate the virtual environment with (.\venv\Scripts\activate.bat)
 Should now look like this ("(venv)C:\Users\username\WorkingDirectory\")
 Navigate to the django project directory (Example: C:\Users\username\WorkingDirectory\django_project\)
