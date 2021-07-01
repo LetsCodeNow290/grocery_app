@@ -1,0 +1,44 @@
+Recipe attributes:(In recipe app)
+    - recipe_name
+    - recipe_category: inherit from RecipeCatagory
+    - recipe_image
+    - recipe_instructions
+    - recipe_location
+    - location_page_number
+
+Ingredient attributes:(in recipe app)
+    - ingredient_name: inherit from Food
+    - linked_recipe: inherit from Recipe
+    - ingredient_quantity
+    - quantity_unit: inherit from Unit
+
+ChooseItem attributes:(in groceries app)
+    - item_name: inherit from Food
+    - item_quantity
+    - item_quantity_unit: inherit from MeasuringUnit
+
+GroceryList attributes:(in groceries app)
+    - list_name
+    - list_items: inherit from ChooseItem with m2m
+    - list_recipes: inherit from Recipe with m2m
+        - make_list model function to make the grocery list
+
+MeasuringUnit attributes:(in component app)
+    - unit_name
+
+Food attributes:(in component app)
+    - food_name
+    - food_category: inherit from FoodCatagory
+    - food_aisle
+
+RecipeCatagory:(in component app)
+    - recipe_category_name
+
+FoodCatagory:(in component app)
+    - food_category_name
+
+Aisle:(in component app)
+    - aisle_name
+
+RecipeBook:(in component app)
+    - book_name
