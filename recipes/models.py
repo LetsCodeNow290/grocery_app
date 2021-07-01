@@ -19,6 +19,7 @@ class Recipe(models.Model):
     def __str__(self):
         return self.recipe_name
 
+    # These next lines are meant to store the files at a smaller size, but it wouldn't work
     # def save(self, *args, **kwargs):
     #     super().save(*args, **kwargs)
 
