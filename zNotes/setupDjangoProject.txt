@@ -1,0 +1,22 @@
+Install git (https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) directions at this web site
+Open a command shell
+Ensure git is installed and mapped to PATH with (git --version)
+If the git command isn't recognized, map git to PATH (https://datatofish.com/add-python-to-windows-path/)
+Directions to map to PATH in above URL. Use same method to map python and pip if needed
+Next, install python (https://www.python.org/downloads/)
+Make sure pip is installed (pip --verison)
+With pip, install venv with (pip install venv)
+Create and navigate to working directory. (Example: C:\Users\username\WorkingDirectory\)
+In the working directory, create a directory for the django project
+Place all of the files from github in the django project directory
+Next, in the working directory, create a virtual environment for this project with (python -m venv .)
+Activate the virtual environment with (.\venv\Scripts\activate.bat)
+Should now look like this ("(venv)C:\Users\username\WorkingDirectory\")
+Navigate to the django project directory (Example: C:\Users\username\WorkingDirectory\django_project\)
+Type (pip freeze) to ensure pip is installed in the virtual environment
+Type (pip install -r requirements.txt) to install everything for the project
+Create another superuser with (python manage.py createsuperuser) and work through the prompts
+Start the server with (python manage.py runserver)
+Hopefully the server starts without any issues
+Open a browser and type (localhost:8000) OR (127.0.0.1:8000) and log in
+Use ctrl+C in the command prompt to stop the server

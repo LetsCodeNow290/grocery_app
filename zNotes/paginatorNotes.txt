@@ -12,13 +12,13 @@ Function view:
 Class view:
     add "paginate_by = number" as an attribute
 
-Template:
+Next, go to the template:
 
 From Function:
-    use your context name as base
+    use your context name the base variable
 
 From Class:
-    use page_obj as base
+    use page_obj as base variable
 
         attributes of the paginator object:
             - .has_previous
