@@ -44,6 +44,7 @@ def add_ingredient(request):
 class RecipeList(ListView):
     model = Recipe
     paginate_by = 5
+    ordering = ['recipe_name']
 
 
 class RecipeUpdate(UpdateView):
@@ -58,6 +59,11 @@ class RecipeUpdate(UpdateView):
     ]
     success_url = "/recipe_list"
     template_name_suffix = '_update_form'
+
+    def form_valid(self, form):
+        form.instance.recipe_name = form.cleaned_data.get(
+            "recipe_name").capitalize()
+        return super().form_valid(form)
 
 
 class RecipeDelete(DeleteView):
