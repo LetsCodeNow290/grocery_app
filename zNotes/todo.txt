@@ -1,5 +1,3 @@
-Start paginating things: I think I'm finished with this
-
 Work on placing an M2M field in the recipe model for ingredients:
     - Right now each ingredient is linked to a recipe with the "linked_recipe" field in the recipe
         To access all the ingredients in a recipe, Django goes through each ingredient object and compares the "linked_recipe" to the desired recipe.

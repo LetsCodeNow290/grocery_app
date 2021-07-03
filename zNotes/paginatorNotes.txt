@@ -4,10 +4,14 @@ Function view:
     import below
     from django.core.paginator import Paginator
     use case:  
-        make a paginator with "paginator_var = Paginator(Model.objects.all(), 4(items))"
+        make a paginator with "paginator_var = Paginator(Model.objects.all(), 4(paginate_by))"
         set up each page with "page = request.GET.get('page')"
         put it all together with "paged_paginator_var = paginator_var.get_page('page')"
         replace context with the paged_paginator_var
+        NOTE** If writing a custom query where a dictionary is normally used, you have use a tuple instead.
+        Easiest way to do this is write a list generator and convert to a tuple in the Paginator function.
+        Example -   custom_query = [('x', x) for x in Model.objects.all())]
+                    paginator_var = Paginator(tuple(custom_query), 5(paginate_by))**
 
 Class view:
     add "paginate_by = number" as an attribute
@@ -28,3 +32,4 @@ From Class:
             - .paginator.num_pages
             - .previous_page_number
             - .next_page_number
+            - .object_list (access the queryset from a function view)

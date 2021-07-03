@@ -3,7 +3,7 @@ Recipe attributes:(In recipe app)
     - recipe_category: inherit from RecipeCatagory
     - recipe_image
     - recipe_instructions
-    - recipe_location
+    - recipe_location: inherit from RecipeBook
     - location_page_number
 
 Ingredient attributes:(in recipe app)
@@ -29,7 +29,7 @@ MeasuringUnit attributes:(in component app)
 Food attributes:(in component app)
     - food_name
     - food_category: inherit from FoodCatagory
-    - food_aisle
+    - food_aisle: inherit from Aisle
 
 RecipeCatagory:(in component app)
     - recipe_category_name

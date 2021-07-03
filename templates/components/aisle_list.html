@@ -6,7 +6,9 @@
 <div class='content-section'>
     <h2>All of the Aisles</h2>
 
-    {% for aisle in object_list %}
+
+    {% for obj, aisle in aisles.object_list %}
+
     <div class="table" style="border-style: solid;border-width: 3px;border-color: black;"><br>
         <h3>{{ aisle }}</h3>
         <a class="btn btn-secondary" style="background-color: red;" href="{% url 'aisle_delete' pk=aisle.pk %}">Delete
@@ -14,32 +16,34 @@
         <a class="btn btn-secondary" style="background-color: rgb(10, 124, 0);"
             href="{% url 'aisle_update' pk=aisle.pk %}">Update
             {{aisle}}</a>
-    </div>
-    {% endfor %}
-    {% if is_paginated %}
 
-    {% if page_obj.has_previous %}
+    </div>
+
+    {% endfor %}
+
+
+    {% if aisles.has_previous %}
     <a class="btn btn-outline-info mb-4" style="border-color:black" href="?page=1">First</a>
     <a class="btn btn-outline-info mb-4" style="border-color:black"
-        href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        href="?page={{ aisles.previous_page_number }}">Previous</a>
     {% endif %}
 
-    {% for num in page_obj.paginator.page_range %}
-    {% if page_obj.number == num %}
+    {% for num in aisles.paginator.page_range %}
+    {% if aisles.number == num %}
     <a class="btn btn-info mb-4" style="border-color:black" href="?page={{ num }}">{{ num }}</a>
-    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3'%} <a class="btn btn-outline-info mb-4"
+    {% elif num > aisles.number|add:'-3' and num < aisles.number|add:'3'%} <a class="btn btn-outline-info mb-4"
         style="border-color:black" href="?page={{ num }}">{{ num }}</a>
         {% endif %}
         {% endfor %}
 
-        {% if page_obj.has_next %}
+        {% if aisles.has_next %}
         <a class="btn btn-outline-info mb-4" style="border-color:black"
-            href="?page={{ page_obj.next_page_number }}">Next</a>
+            href="?page={{ aisles.next_page_number }}">Next</a>
         <a class="btn btn-outline-info mb-4" style="border-color:black"
-            href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+            href="?page={{ aisles.paginator.num_pages }}">Last</a>
 
         {% endif %}
-        {% endif %}
+
         <a class="btn btn-secondary" href="{% url 'home_admin' %}">Back</a>
 </div>
 

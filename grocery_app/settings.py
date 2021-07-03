@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'components.apps.ComponentsConfig',
     'home.apps.HomeConfig',
     'groceries.apps.GroceriesConfig',
+    'natsort',
 ]
 
 MIDDLEWARE = [
