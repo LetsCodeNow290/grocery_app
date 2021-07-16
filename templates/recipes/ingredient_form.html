@@ -12,9 +12,21 @@
         </fieldset>
         <div class="form-group">
             <button class='btn btn-outline-info' type='submit'>Submit</button>
-            <a style="float: right" class="btn btn-secondary" href="{% url 'home' %}">Done</a>
+
         </div>
     </form>
-</div>
 
+</div>
+<a style="float: right" class="btn btn-secondary" href="{% url 'home' %}">Done</a>
+{% endblock %}
+
+{% block content2 %}
+<div>
+    <h2>All of the Ingredients</h2>
+    <p class="article-content"> {% for ingred in data.ingredients.all %}
+        <li style="float: right;">{{ ingred }} x {{ingred.ingredient_quantity}}</li><br>
+        {% endfor %}
+    </p>
+
+</div>
 {% endblock %}

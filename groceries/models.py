@@ -31,9 +31,8 @@ class GroceryList(models.Model):
         recipe_object_list = []
         # This loop extracts the ingredients from each recipe and places them into a list
         for recipe in recipes:
-            for ingred in Ingredient.objects.all():
-                if str(recipe) == ingred.linked_recipe:
-                    recipe_object_list.append(ingred)
+            for ingred in recipe.ingredients.all():
+                recipe_object_list.append(ingred)
         # generator to create a list of standardized dictionaries for recipe ingredients
         recipe_full_list = [{'food_name': item.ingredient_name.food_name, "aisle": item.ingredient_name.food_aisle.aisle_name, "food_category": item.ingredient_name.food_category.food_category_name,
                              'quantity': item.ingredient_quantity, 'quantity_unit_name': item.quantity_unit.unit_name} for item in recipe_object_list]

@@ -13,8 +13,7 @@ class Recipe(models.Model):
     recipe_location = models.ForeignKey(
         'components.RecipeBook', on_delete=models.CASCADE, related_name='recipe_location', blank=True, null=True)
     location_page_number = models.IntegerField(blank=True, null=True)
-    # ingredients = models.ManyToManyField(
-    #     Ingredient, related_name="recipe_ingredient")
+    ingredients = models.ManyToManyField('Ingredient', blank=True)
 
     def __str__(self):
         return self.recipe_name
@@ -36,7 +35,7 @@ class Ingredient(models.Model):
         'components.Food', on_delete=models.CASCADE, related_name='ingredient_name')
     # linked_recipe = models.ForeignKey(
     #     'Recipe', on_delete=models.CASCADE, related_name='linked_recipe')
-    linked_recipe = models.CharField(max_length=100)
+    # linked_recipe = models.CharField(max_length=100)
     ingredient_quantity = models.FloatField()
     quantity_unit = models.ForeignKey(
         'components.MeasuringUnit', on_delete=models.CASCADE, related_name='quantity_unit')

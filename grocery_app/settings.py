@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'groceries.apps.GroceriesConfig',
     'natsort',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

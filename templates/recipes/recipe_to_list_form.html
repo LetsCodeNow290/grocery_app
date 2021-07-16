@@ -8,12 +8,12 @@
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <fieldset class='form-group'>
-            <legend class="border-bottom mb-4">Start a recipe here {{ object }}</legend>
+            <legend class="border-bottom mb-4">Add {{ object }} to a list</legend>
             {{ form|crispy }}
         </fieldset>
         <div class="form-group">
             <button class='btn btn-outline-info' type='submit'>Submit</button>
-            <a class='btn btn-outline-info float-right' type='button' href=" {% url 'home' %}">Cancel</a>
+            <a class='btn btn-outline-info float-right' type='button' href=" {% url 'recipe_list' %}">Cancel</a>
 
         </div>
     </form>

@@ -10,13 +10,22 @@
         <div class="media-body">
             <h2>{{ recipe.recipe_name }}</h2>
             <div class="article-metadata">
-                <p class="article-content">Recipe Category: {{ recipe.recipe_category }}</p>
-                <p class="article-content">Instructions: {{ recipe.recipe_instructions }}</p>
-                {% if recipe.recipe_category %}
-                <p class="article-content">Recipe Book: {{ recipe.recipe_location }} on page
-                    {{recipe.location_page_number}}
+                <p class="article-content">
+                <h4>Recipe Category:</h4> {{ recipe.recipe_category }}</p>
+                <p class="article-content">
+                <h4>Instructions:</h4> {{ recipe.recipe_instructions }}</p>
+
+                <p class="article-content">
+                <h4>Recipe Book:</h4> {{ recipe.recipe_location }} on page
+                {{recipe.location_page_number}}
                 </p>
-                {% endif %}
+                <p class="article-content">
+                <h4>Ingredients:</h4> {% for ingred in recipe.ingredients.all %}
+                <li style="float: right;">{{ ingred }}</li><br>
+                {% endfor %}
+                </p>
+
+
 
             </div>
     </article>

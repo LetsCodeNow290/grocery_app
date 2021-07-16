@@ -27,7 +27,7 @@ def choose_list(request):
 # the 'pk' argument is added to the function so I can access the correct List object
 
 
-def add_to_list(request, pk):
+def add_to_list_main(request, pk):
     if request.method == 'POST':
         obj = get_object_or_404(GroceryList, pk=pk)
         form_recipe = GroceryListForm(request.POST or None, instance=obj)
@@ -57,6 +57,7 @@ def add_to_list(request, pk):
                 GroceryList.objects.get(pk=pk))
             ingredients = {}
             for item in obj:
+                print(item)
                 try:
                     ingredients[item['food_name']
                                 ] = f"{item['food_name']} x {int(item['quantity'])}"
