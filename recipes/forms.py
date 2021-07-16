@@ -1,5 +1,6 @@
 from django import forms
 from .models import *
+from components.models import RecipeCategory
 from groceries.models import GroceryList
 import django_filters
 
@@ -18,14 +19,9 @@ class IngredientForm(forms.ModelForm):
 
 
 class RecipeFilter(django_filters.FilterSet):
-    class Meta:
-        model = Recipe
-        fields = ['recipe_category', ]
-
-
-class RecipeToListForm(forms.Form):
-    choose_a_list = forms.ModelChoiceField(
-        GroceryList.objects.all().order_by('-id'), empty_label=None)
+    # The below code changes the default filter label to "ALL"
+    recipe_category = django_filters.ModelChoiceFilter(
+        queryset=RecipeCategory.objects.all(), empty_label="All")
 
 
 class RecipeToList(forms.Form):
