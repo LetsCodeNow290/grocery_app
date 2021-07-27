@@ -11,7 +11,10 @@
             {{ recipe_form|crispy }}
         </fieldset>
         <div class="form-group">
-            <button class='btn btn-outline-info' type='submit'>Add Another Recipe to the List</button>
+            <button class='btn btn-outline-info' type='submit'>Submit Recipe to the List</button>
+            <a class='btn btn-outline-info float-right' type='button' href=" {% url 'start_recipe' %}">Make New
+                Recipe</a>
+
         </div>
     </form>
 </div>
@@ -23,7 +26,7 @@
             {{ item_form|crispy }}
         </fieldset>
         <div class="form-group">
-            <button class='btn btn-outline-info' type='submit'>Add Another Item to the List</button>
+            <button class='btn btn-outline-info' type='submit'>Submit Item to the List</button>
         </div>
     </form>
 </div>

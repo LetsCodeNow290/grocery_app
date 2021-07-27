@@ -30,26 +30,23 @@ def choose_list(request):
 def add_to_list_main(request, pk):
     if request.method == 'POST':
         obj = get_object_or_404(GroceryList, pk=pk)
-        form_recipe = GroceryListForm(request.POST or None, instance=obj)
+        form_recipe = GroceryListForm(request.POST or None)
         form_item = ChooseItemForm(request.POST or None)
-        # The try statement below is done so I can submit only one form at a time
-        try:
-            if form_recipe.is_valid:
-                form_recipe.save(commit=False)
-                # This next line adds a recipe object to the GroceryList object m2m field
-                GroceryList.objects.get(pk=pk).list_recipes.add(Recipe.objects.get(recipe_name=form_recipe.cleaned_data.get('list_recipes')[0])
-                                                                )
+        if form_recipe.is_valid() or form_item.is_valid():
+            # This next line adds a recipe object to the GroceryList object m2m field
+            if form_recipe.is_valid():
+                obj.list_recipes.add(
+                    form_recipe.cleaned_data.get('list_recipes'))
                 the_list_name = GroceryList.objects.get(pk=pk).list_name
                 messages.success(
-                    request, f'The recipe has been added to the {the_list_name}')
-                return HttpResponseRedirect(request.path_info)
-        except:
-            if form_item.is_valid:
+                    request, f'The recipe {form_recipe.cleaned_data.get("list_recipes")} has been added to the {the_list_name}')
+            if form_item.is_valid():
                 form_item.save()
-                GroceryList.objects.get(pk=pk).list_items.add(
+                obj.list_items.add(
                     ChooseItem.objects.get(pk=form_item.save().pk))
-                return HttpResponseRedirect(request.path_info)
-
+                messages.success(
+                    request, f'{form_item.save().item_name.food_name} was added to the List')
+            return HttpResponseRedirect(request.path_info)
     else:
         # This try statement makes the ingredient list
         try:
@@ -57,7 +54,6 @@ def add_to_list_main(request, pk):
                 GroceryList.objects.get(pk=pk))
             ingredients = {}
             for item in obj:
-                print(item)
                 try:
                     ingredients[item['food_name']
                                 ] = f"{item['food_name']} x {int(item['quantity'])}"
