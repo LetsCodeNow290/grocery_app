@@ -2,6 +2,7 @@ from django.db import models
 from components.models import Food, MeasuringUnit
 from recipes.models import Recipe, Ingredient
 from datetime import datetime as dt
+from natsort import natsorted
 
 
 class ChooseItem(models.Model):
@@ -52,7 +53,7 @@ class GroceryList(models.Model):
                 # this number is the list index number i.e. {'food_name': 1}
                 names[item['food_name']] = len(new_list)-1
         # sort list by aisle
-        final_list = sorted(new_list, key=lambda x: x['aisle'])
+        final_list = natsorted(new_list, key=lambda x: x['aisle'])
         # convert list to dictionary
         final_dict = {count: item for count, item in enumerate(final_list)}
         return final_list
