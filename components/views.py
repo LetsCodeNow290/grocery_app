@@ -17,6 +17,11 @@ class AddFood(CreateView):
             "food_name").capitalize()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        kwargs['object_list'] = Food.objects.order_by(
+            'food_name')
+        return super().get_context_data(**kwargs)
+
 
 class DeleteFood(DeleteView):
     model = Food
@@ -53,6 +58,11 @@ class AddUnit(CreateView):
             "unit_name").capitalize()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        kwargs['object_list'] = MeasuringUnit.objects.order_by(
+            'unit_name')
+        return super().get_context_data(**kwargs)
+
 
 class DeleteUnit(DeleteView):
     model = MeasuringUnit
@@ -83,6 +93,11 @@ class AddRecipeCategory(CreateView):
         form.instance.recipe_category_name = form.cleaned_data.get(
             "recipe_category_name").capitalize()
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        kwargs['object_list'] = RecipeCategory.objects.order_by(
+            'recipe_category_name')
+        return super().get_context_data(**kwargs)
 
 
 class DeleteRecipeCategory(DeleteView):
@@ -115,8 +130,10 @@ class AddFoodCategory(CreateView):
             "food_category_name").capitalize()
         return super().form_valid(form)
 
-    def get_queryset(self):
-        return FoodCategory.objects.all()
+    def get_context_data(self, **kwargs):
+        kwargs['object_list'] = FoodCategory.objects.order_by(
+            'food_category_name')
+        return super().get_context_data(**kwargs)
 
 
 class DeleteFoodCategory(DeleteView):
@@ -148,6 +165,11 @@ class AddRecipeBook(CreateView):
         form.instance.book_name = form.cleaned_data.get(
             "book_name").capitalize()
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        kwargs['object_list'] = RecipeBook.objects.order_by(
+            'book_name')
+        return super().get_context_data(**kwargs)
 
 
 class UpdateRecipeBook(UpdateView):
@@ -205,3 +227,10 @@ class AddAisle(CreateView):
         form.instance.aisle_name = form.cleaned_data.get(
             "aisle_name").capitalize()
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        natural_list = natsorted([str(x) for x in Aisle.objects.all()])
+        obj_list = [
+            f"{Aisle.objects.filter(aisle_name=x)[0]}" for x in natural_list]
+        kwargs['object_list'] = obj_list
+        return super().get_context_data(**kwargs)

@@ -18,3 +18,12 @@
 </div>
 
 {% endblock %}
+
+{% block content2 %}
+<div>
+    <h3>Existing Foods</h3>{% for obj in object_list %}
+    <li>{{obj}}</li>
+    {% endfor %}
+</div>
+
+{% endblock %}
