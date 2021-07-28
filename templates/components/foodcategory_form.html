@@ -18,3 +18,10 @@
 </div>
 
 {% endblock %}
+{% block content2 %}
+<div>{% for obj in objects_list %}
+    <li>{{obj}}</li>
+    {% endfor %}
+</div>
+
+{% endblock %}

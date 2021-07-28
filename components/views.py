@@ -115,6 +115,9 @@ class AddFoodCategory(CreateView):
             "food_category_name").capitalize()
         return super().form_valid(form)
 
+    def get_queryset(self):
+        return FoodCategory.objects.all()
+
 
 class DeleteFoodCategory(DeleteView):
     model = FoodCategory
