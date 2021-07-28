@@ -158,7 +158,7 @@ class ListFoodCategory(ListView):
 
 class AddRecipeBook(CreateView):
     model = RecipeBook
-    fields = ['book_name']
+    fields = ['book_name', 'recipe_book_image']
     success_url = '/home_admin'
 
     def form_valid(self, form):
@@ -174,7 +174,7 @@ class AddRecipeBook(CreateView):
 
 class UpdateRecipeBook(UpdateView):
     model = RecipeBook
-    fields = ['book_name']
+    fields = ['book_name', 'recipe_book_image']
     success_url = '/recipe_book/list'
     template_name_suffix = '_update'
 

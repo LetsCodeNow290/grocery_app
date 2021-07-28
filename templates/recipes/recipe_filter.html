@@ -20,7 +20,8 @@
     <br>
     {% for obj in filter.qs %}
     <article class="media content-section">
-        <img class="rounded-circle article-img" src="{{ obj.recipe_image.url }}">
+        <a href="{{ obj.recipe_image.url }}"><img class="rounded-circle article-img"
+                src="{{ obj.recipe_image.url }}"></a>
         <div class="media-body">
             <p style="font-size: x-large;"><a href="{% url 'recipe_detail' pk=obj.pk %}">{{obj.recipe_name}}</a>
             </p>

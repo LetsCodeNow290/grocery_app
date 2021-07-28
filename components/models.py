@@ -45,6 +45,8 @@ class Aisle(models.Model):
 
 class RecipeBook(models.Model):
     book_name = models.CharField(max_length=100)
+    recipe_book_image = models.ImageField(
+        blank=True, null=True, default="default_book.jpg", upload_to="recipe_book_pics/")
 
     def __str__(self):
         return self.book_name
