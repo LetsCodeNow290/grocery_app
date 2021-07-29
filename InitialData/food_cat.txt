@@ -1,0 +1,13 @@
+Vegtable
+Fruit
+Grain
+Meat-Poultry
+Meat-Pork
+Meat-Beef
+Meat-Fish
+Meat-Other
+Dairy
+Bean
+Sugary
+Oils
+Drinks
