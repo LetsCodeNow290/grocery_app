@@ -2,16 +2,36 @@
 
 from components.models import *
 import os
+base = f'{os.getcwd()}/InitialData'
 
-obj_list = {'MeasuringUnit': MeasuringUnit, 'Aisle': Aisle, 'FoodCategory': FoodCategory, 'RecipeCategory': RecipeCategory}
-
-with open('initial_data.txt','r') as f:
-	for x in f:
-		tmp = x.split(',')
-		with open(f'{os.getcwd()}/InitialData/{tmp[1]}','r') as base_file:
-			for line in base_file:
-				obj_list[tmp[0]].objects.create(tmp[2]=line).save()
-				#y(tmp[2]=line).save()
-				#with open('start_data.txt','a') as start:
-				#	start.write(f'{tmp[0]}({tmp[2]}={line}).save()')
-				#	start.write('\n')
+with open(f'{base}/aisles.txt', 'r') as af:
+	for line in af:
+		if Aisle.objects.filter(aisle_name=line):
+			continue
+		else:
+			Aisle(aisle_name=line).save()
+with open(f'{base}/food_cat.txt', 'r') as af:
+	for line in af:
+		if FoodCategory.objects.filter(food_category_name=line):
+			continue
+		else:
+			FoodCategory(food_category_name=line).save()
+with open(f'{base}/recipe_cat.txt', 'r') as af:
+	for line in af:
+		if RecipeCategory.objects.filter(recipe_category_name=line):
+			continue
+		else:
+			RecipeCategory(recipe_category_name=line).save()
+with open(f'{base}/units.txt', 'r') as af:
+	for line in af:
+		if MeasuringUnit.objects.filter(unit_name=line):
+			continue
+		else:
+			MeasuringUnit(unit_name=line).save()
+with open(f'{base}/recipe_book.txt', 'r') as af:
+	for line in af:
+		if RecipeBook.objects.filter(book_name=line):
+			continue
+		else:
+			RecipeBook(book_name=line).save()
+			

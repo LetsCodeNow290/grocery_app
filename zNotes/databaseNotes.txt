@@ -1,5 +1,6 @@
 Clear database - python manage.py flush
-Copy databse - python manage.py dumpdata > file.json
+Copy database for existing database - python manage.py dumpdata > file.json
+Copy database for a fresh database - python manage.py dumpdata --exclude auth.permission --exclude contenttypes > db.json
 Load databse - python manage.py loaddata file.json
 
 If "Could not load contenttypes.ContentType(pk=15): UNIQUE constraint failed: django_content_type.app_label, django_content_type.model" error while loading data from json, open a django shell and import the following:

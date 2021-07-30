@@ -10,3 +10,6 @@ Recipe:
 Enhancements:
     - scrape web for deals and coupons for Groceries
     - add Grocery Store object so I can add foods for several different grocery stores
+    
+Future Research:
+	- I need to figure our how to manage the database. Dumpdata and Loaddata options are not as straightforward as they seem.
