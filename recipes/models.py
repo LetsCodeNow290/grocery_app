@@ -19,15 +19,15 @@ class Recipe(models.Model):
         return self.recipe_name
 
     # These next lines are meant to store the files at a smaller size, but it wouldn't work
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
-    #     img = Image.open(self.recipe_image.path)
+        img = Image.open(self.recipe_image.path)
 
-    #     if img.height > 300 or img.width > 300:
-    #         output_size = (300, 300)
-    #         img.thumbnail(output_size)
-    #         img.save(self.recipe_image.path)
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.recipe_image.path)
 
 
 class Ingredient(models.Model):
