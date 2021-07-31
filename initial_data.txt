@@ -1,4 +1,0 @@
-Aisle,aisles.txt,aisle_name
-FoodCategory,food_cat.txt,food_category_name
-RecipeCategory,recipe_cat.txt,recipe_category_name
-MeasuringUnit,units.txt,unit_name
