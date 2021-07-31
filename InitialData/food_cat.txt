@@ -1,4 +1,6 @@
-Vegtable
+Vegtable - Fresh
+Vegtable - Canned
+Vegtable - Other
 Fruit
 Grain
 Meat-Poultry
@@ -7,7 +9,18 @@ Meat-Beef
 Meat-Fish
 Meat-Other
 Dairy
-Bean
+Bean - Dry
+Bean - Canned
 Sugary
 Oils
+Vinegar
 Drinks
+Pasta
+Condiments
+Spreads
+Toppings
+Snack
+Spice
+Baking
+Canned
+Other

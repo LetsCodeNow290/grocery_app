@@ -34,3 +34,11 @@ with open(f'{base}/recipe_book.txt', 'r') as af:
             continue
         else:
             RecipeBook(book_name=line).save()
+with open(f'{base}/food.txt', 'r') as af:
+    for line in af:
+    	line = line.split(',')
+    	line[1] = line[1].lstrip()
+        if Food.objects.filter(food_name=line[0]):
+            continue
+        else:
+            Food(food_name=line[0], food_category=line[1]).save()
