@@ -2,6 +2,13 @@ from django.db import models
 from components.models import *
 from PIL import Image
 
+RECIPE_RATING = (
+    ("bad", "Don't make this again"),
+    ("okay", "Not bad"),
+    ("good", "Pretty good"),
+    ("best", "Excellent"),
+)
+
 
 class Recipe(models.Model):
     recipe_name = models.CharField(max_length=100)
@@ -14,6 +21,9 @@ class Recipe(models.Model):
         'components.RecipeBook', on_delete=models.CASCADE, related_name='recipe_location', blank=True, null=True)
     location_page_number = models.IntegerField(blank=True, null=True)
     ingredients = models.ManyToManyField('Ingredient', blank=True)
+    recipe_rating = models.CharField(blank=True, null=True,
+                                     default='good', choices=RECIPE_RATING, max_length=20)
+    comments = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.recipe_name

@@ -1,13 +1,13 @@
 Components
-    - address image size issue
 
 Groceries
 
 Recipe:
-    - Add validation in the "start_recipe" view
-    - address image size issue
+    - Add a "add food" option in the recipe creation template and redirect back to that page
 
 Enhancements:
+    - Figure out how to redirect to last page on all paginated templates
+    - Redirect to last page when adding food from the recipe creation template
     - scrape web for deals and coupons for Groceries
     - add Grocery Store object so I can add foods for several different grocery stores
     

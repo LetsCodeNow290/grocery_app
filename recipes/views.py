@@ -14,10 +14,11 @@ def start_recipe(request):
         validation = Recipe.objects.all()
         if form.is_valid():
             recipe_name = form.cleaned_data.get('recipe_name')
-            # create a validation so there are no duplicate recipe names
+            # validation for duplicate recipes. May not work
             for obj in validation:
                 if obj.recipe_name.lower() == recipe_name.lower():
-                    pass  # create and error message here
+                    messages.error(request, 'That recipe already exists')
+                    return redirect(f'/recipe_list/{obj.pk}')
                 else:
                     continue
             form.save()

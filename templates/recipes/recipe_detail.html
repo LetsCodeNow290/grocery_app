@@ -8,7 +8,8 @@
     <article class="media content-section">
         <img class="rounded-circle article-img" src="{{ recipe.recipe_image.url }}">
         <div class="media-body">
-            <h2>{{ recipe.recipe_name }}</h2>
+            <h2>{{ recipe.recipe_name }}</h2><br>
+            <h3>Rating: {{ recipe.recipe_rating }}</h3>
             <div class="article-metadata">
                 <p class="article-content">
                 <h4>Recipe Category:</h4> {{ recipe.recipe_category }}</p>
@@ -21,7 +22,7 @@
                 </p>
                 <p class="article-content">
                 <h4>Ingredients:</h4> {% for ingred in recipe.ingredients.all %}
-                <li style="float: right;">{{ ingred }}</li><br>
+                <li>{{ ingred }}</li>
                 {% endfor %}
                 </p>
 
