@@ -3,10 +3,10 @@ from components.models import *
 from PIL import Image
 
 RECIPE_RATING = (
-    ("bad", "Don't make this again"),
-    ("okay", "Not bad"),
-    ("good", "Pretty good"),
-    ("best", "Excellent"),
+    ("Don't make this again", "Don't make this again"),
+    ("Not bad", "Not bad"),
+    ("Pretty good", "Pretty good"),
+    ("Excellent", "Excellent"),
 )
 
 
@@ -22,7 +22,7 @@ class Recipe(models.Model):
     location_page_number = models.IntegerField(blank=True, null=True)
     ingredients = models.ManyToManyField('Ingredient', blank=True)
     recipe_rating = models.CharField(blank=True, null=True,
-                                     default='good', choices=RECIPE_RATING, max_length=20)
+                                     default='good', choices=RECIPE_RATING, max_length=50)
     comments = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -43,9 +43,6 @@ class Recipe(models.Model):
 class Ingredient(models.Model):
     ingredient_name = models.ForeignKey(
         'components.Food', on_delete=models.CASCADE, related_name='ingredient_name')
-    # linked_recipe = models.ForeignKey(
-    #     'Recipe', on_delete=models.CASCADE, related_name='linked_recipe')
-    # linked_recipe = models.CharField(max_length=100)
     ingredient_quantity = models.FloatField()
     quantity_unit = models.ForeignKey(
         'components.MeasuringUnit', on_delete=models.CASCADE, related_name='quantity_unit')

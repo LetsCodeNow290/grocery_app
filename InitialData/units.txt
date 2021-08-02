@@ -8,4 +8,9 @@ gallon
 cc 
 ml
 liter
+pound
+small
+medium
+large
+pinch
 other

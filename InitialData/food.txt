@@ -48,6 +48,7 @@ Sugar, Baking
 Corn Starch, Baking
 Corn Meal, Baking
 Cheese - Shredded Chedder, Dairy
+Cheese - Pepper Jack, Dairy
 Cheese - Shredded Colby Jack, Dairy
 Cheese - Sliced American, Dairy
 Cheese - Mozzerlla Stick, Dairy
@@ -62,7 +63,7 @@ Tomato - Cherry, Vegtable - Fresh
 Tomato - Vine, Vegtable - Fresh
 Corn, Vegtable - Fresh
 Corn, Vegtable - Canned
-Corn - Creamed, - Vegtable - Canned
+Corn - Creamed, Vegtable - Canned
 BBQ - Sweet Baby Ray's, Condiments
 BBQ - Sticky Fingers, Condiments
 Mustard - Stone Ground, Condiments
@@ -98,3 +99,14 @@ Black Bean - Canned, Bean - Canned
 Garbanzos - Chick Pea Canned, Bean - Canned
 Garbanzos - Chick Pea Dry, Bean - Dry
 Cannellini Bean - Canned, Bean - Canned
+Peppers - Bell, Vegtable - Fresh
+Onion, Vegtable - Fresh
+Garlic - Clove, Vegtable - Fresh
+Garlic - Minced, Vegtable - Fresh
+Red Pepper Flakes, Spice
+Lemon, Fruit
+Wine - White, Condiments
+Broth - Chicken, Soup
+Broth - Beef, Soup
+Broth - Vegetable, Soup
+default, default

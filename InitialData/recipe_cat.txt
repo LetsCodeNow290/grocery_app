@@ -9,6 +9,7 @@ Main dishes: Poultry
 Main dishes: Pork
 Main dishes: Seafood
 Main dishes: Vegetarian
+Main dishes: Other
 Side dishes: Vegetables
 Side dishes: Other
 Desserts

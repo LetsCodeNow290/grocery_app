@@ -1,6 +1,6 @@
-Vegtable - Fresh
-Vegtable - Canned
-Vegtable - Other
+Vegetable - Fresh
+Vegetable - Canned
+Vegetable - Other
 Fruit
 Grain
 Meat-Poultry
@@ -23,4 +23,5 @@ Snack
 Spice
 Baking
 Canned
+Soup
 Other

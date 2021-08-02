@@ -82,11 +82,9 @@ except:
                 RecipeBook(book_name=line).save()
     with open(f'{base}\\food.txt', 'r') as af:
         for line in af:
-            if line != "":
-                line = line.split(',')
-                line[1] = line[1].lstrip()
-                if Food.objects.filter(food_name=line[0]):
-                    continue
-                else:
-                    Food(food_name=line[0], food_category=FoodCategory.objects.get(
-                        food_category_name=line[1])).save()
+            line = line.split(',')
+            line[1] = line[1].lstrip()
+            if Food.objects.filter(food_name=line[0]):
+                continue
+            else:
+                Food(food_name=line[0], food_category=FoodCategory.objects.get(food_category_name=line[1])).save()

@@ -13,9 +13,12 @@
             <div class="article-metadata">
                 <p class="article-content">
                 <h4>Recipe Category:</h4> {{ recipe.recipe_category }}</p>
-                <p class="article-content">
+                
+                    {% if recipe.recipe_instructions == "" %}
+                    {% else %}
+                    <p class="article-content"></p>
                 <h4>Instructions:</h4> {{ recipe.recipe_instructions }}</p>
-
+{% endif %}
                 <p class="article-content">
                 <h4>Recipe Book:</h4> {{ recipe.recipe_location }} on page
                 {{recipe.location_page_number}}

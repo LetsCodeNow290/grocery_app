@@ -14,7 +14,7 @@ def start_recipe(request):
         validation = Recipe.objects.all()
         if form.is_valid():
             recipe_name = form.cleaned_data.get('recipe_name')
-            # validation for duplicate recipes. May not work
+            # validation for duplicate recipes. May not work. Needs to be tested
             for obj in validation:
                 if obj.recipe_name.lower() == recipe_name.lower():
                     messages.error(request, 'That recipe already exists')
@@ -77,6 +77,7 @@ class RecipeUpdate(UpdateView):
     fields = [
         'recipe_name',
         'recipe_category',
+        'recipe_rating',
         'recipe_image',
         'recipe_instructions',
         'recipe_location',

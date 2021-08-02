@@ -4,6 +4,7 @@ Groceries
 
 Recipe:
     - Add a "add food" option in the recipe creation template and redirect back to that page
+    - Test recipe validation
 
 Enhancements:
     - Figure out how to redirect to last page on all paginated templates

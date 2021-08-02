@@ -20,7 +20,7 @@ class Food(models.Model):
         return self.food_name
 
     class Meta():
-        ordering = ['food_aisle']
+        ordering = ['food_name']
 
 
 class RecipeCategory(models.Model):
@@ -62,3 +62,5 @@ class RecipeBook(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.recipe_book_image.path)
+    class Meta:
+        ordering = ['book_name',]
