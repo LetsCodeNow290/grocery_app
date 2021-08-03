@@ -33,3 +33,29 @@ From Class:
             - .previous_page_number
             - .next_page_number
             - .object_list (access the queryset from a function view)
+
+How to go back to the previous page from a list view:
+
+See components.views ListFood, UpdateFood, DeleteFood and corresponding templates
+
+Start in listview and add context with:
+    def get_context_data(self, **kwargs):
+        kwargs['current_page'] = self.request.GET.get('page', 1)
+        return super().get_context_data(**kwargs)
+
+Go to list template and add this, "?next={{current_page}}", to the end of the href on the anchor tag:
+    <a class="btn btn-secondary" style="background-color: rgb(10, 124, 0);"
+            href="{% url 'aisle_update' pk=aisle.pk %}?next={{current_page}}">Update
+            {{aisle}}</a>
+
+Then go back to the views that are the target of the anchor tag and context and success URL:
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return f"/recipe_book/list?page={self.request.GET.get('next', 1)}"
+        else:
+            return '/recipe_book/list'
+
+    def get_context_data(self, **kwargs):
+        kwargs['last_page'] = self.request.GET.get('next', 1)
+        return super().get_context_data(**kwargs)
+    *** this is so you can add the target page to an anchor tag *** 
