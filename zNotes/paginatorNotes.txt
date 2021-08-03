@@ -36,7 +36,8 @@ From Class:
 
 How to go back to the previous page from a list view:
 
-See components.views ListFood, UpdateFood, DeleteFood and corresponding templates
+See components.views ListFood, UpdateFood, DeleteFood and corresponding templates OR
+https://stackoverflow.com/questions/40462994/django-pagination-how-to-redirect-back-to-a-listview-and-a-page-number/68640959#68640959
 
 Start in listview and add context with:
     def get_context_data(self, **kwargs):

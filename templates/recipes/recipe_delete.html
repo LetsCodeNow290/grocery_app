@@ -13,7 +13,7 @@
         <div class="form-group">
             <button class='btn btn-outline-info' type='submit'>Delete</button>
 
-            <a class='btn btn-outline-info float-right' type='button' href=" {% url 'recipe_list' %}">Cancel</a>
+            <a class='btn btn-outline-info float-right' type='button' href=" {% url 'recipe_list' %}?page={{last_page}}">Cancel</a>
         </div>
     </form>
 </div>

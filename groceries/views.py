@@ -108,3 +108,7 @@ def print_list(request, pk):
     for item in new_list:
         writer.writerow(item)
     return response
+
+def remove_items_from_list(request, pk):
+    '''This view removes items from a grocery list'''
+    pass

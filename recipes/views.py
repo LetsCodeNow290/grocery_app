@@ -71,6 +71,10 @@ class RecipeFilterList(FilterView):
     template_name = 'recipe_filter'
     paginate_by = 10
 
+    def get_context_data(self, **kwargs):
+        kwargs['current_page'] = self.request.GET.get('page', 1)
+        return super().get_context_data(**kwargs)
+
 
 class RecipeUpdate(UpdateView):
     model = Recipe
@@ -83,8 +87,14 @@ class RecipeUpdate(UpdateView):
         'recipe_location',
         'location_page_number'
     ]
-    success_url = "/recipe_list"
+    #success_url = "/recipe_list"
     template_name_suffix = '_update_form'
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return f"/recipe_list?page={self.request.GET.get('next', 1)}"
+        else:
+            return '/recipe_list'
 
     def form_valid(self, form):
         form.instance.recipe_name = form.cleaned_data.get(
@@ -92,14 +102,25 @@ class RecipeUpdate(UpdateView):
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
+        kwargs['last_page'] = self.request.GET.get('next', 1)
         kwargs['data'] = Recipe.objects.get(pk=self.kwargs.get('pk'))
         return super().get_context_data(**kwargs)
 
 
 class RecipeDelete(DeleteView):
     model = Recipe
-    success_url = "/recipe_list"
+    #success_url = "/recipe_list"
     template_name_suffix = '_delete'
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return f"/recipe_list?page={self.request.GET.get('next', 1)}"
+        else:
+            return '/recipe_list'
+
+    def get_context_data(self, **kwargs):
+        kwargs['last_page'] = self.request.GET.get('next', 1)
+        return super().get_context_data(**kwargs)
 
 
 class RecipeDetail(DetailView):

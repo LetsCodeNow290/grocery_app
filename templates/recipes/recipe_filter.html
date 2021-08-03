@@ -27,13 +27,13 @@
             </p>
             <!-- <p>Instructions: <br>{{ recipe.recipe_instructions }}</p> -->
             <a class="btn btn-secondary" style="background-color: red;"
-                href="{% url 'recipe_delete' pk=obj.pk %}">Delete
+                href="{% url 'recipe_delete' pk=obj.pk %}?next={{current_page}}">Delete
                 {{obj}}</a>
             <a class="btn btn-secondary" style="background-color: rgb(10, 124, 0);"
-                href="{% url 'recipe_update' pk=obj.pk %}">Update
+                href="{% url 'recipe_update' pk=obj.pk %}?next={{current_page}}">Update
                 {{obj}}</a>
             <a class="btn btn-secondary" style="background-color: rgb(88, 6, 241);"
-                href="{% url 'recipe_to_list' pk=obj.pk %}">Add
+                href="{% url 'recipe_to_list' pk=obj.pk %}?next={{current_page}}">Add
                 {{obj}} to a List</a>
 
 

@@ -47,3 +47,16 @@
 </div>
 
 {% endblock %}
+
+{% block content2 %}
+<div class='content-section'>
+<h3>Remove Items from a List</h3>
+    {% for list in list_of_lists %}
+    <ul>
+        <li>
+            <a href="{% url 'add_to_list' pk=list.pk %}">{{ list }}</a>
+        </li>
+    </ul>
+    {% endfor %}
+    </div>
+{% endblock %}
