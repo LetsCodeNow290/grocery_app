@@ -12,7 +12,7 @@
         </fieldset>
         <div class="form-group">
             <button class='btn btn-outline-info' type='submit'>Update</button>
-            <a class='btn btn-outline-info float-right' type='button' href=" {% url 'food_cat_list' %}">Cancel</a>
+            <a class='btn btn-outline-info float-right' type='button' href=" {% url 'food_cat_list' %}?page={{last_page}}">Cancel</a>
         </div>
     </form>
 </div>

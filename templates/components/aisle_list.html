@@ -11,10 +11,10 @@
 
     <div class="table" style="border-style: solid;border-width: 3px;border-color: black;"><br>
         <h3>{{ aisle }}</h3>
-        <a class="btn btn-secondary" style="background-color: red;" href="{% url 'aisle_delete' pk=aisle.pk %}">Delete
+        <a class="btn btn-secondary" style="background-color: red;" href="{% url 'aisle_delete' pk=aisle.pk %}?next={{current_page}}">Delete
             {{aisle}}</a>
         <a class="btn btn-secondary" style="background-color: rgb(10, 124, 0);"
-            href="{% url 'aisle_update' pk=aisle.pk %}">Update
+            href="{% url 'aisle_update' pk=aisle.pk %}?next={{current_page}}">Update
             {{aisle}}</a>
 
     </div>

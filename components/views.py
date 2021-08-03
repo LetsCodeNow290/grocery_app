@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, reverse, redirect, HttpResponseRedirect
 from .models import *
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from natsort import natsorted
@@ -25,22 +25,44 @@ class AddFood(CreateView):
 
 class DeleteFood(DeleteView):
     model = Food
-    success_url = '/food/list'
     template_name_suffix = '_delete'
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return f"/food/list?page={self.request.GET.get('next', 1)}"
+        else:
+            return '/food/list'
+
+    def get_context_data(self, **kwargs):
+        kwargs['last_page'] = self.request.GET.get('next', 1)
+        return super().get_context_data(**kwargs)
+
 
 
 class UpdateFood(UpdateView):
     model = Food
     fields = ['food_name', 'food_category', 'food_aisle']
-    success_url = '/food/list'
     template_name_suffix = '_update'
+    
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return f"/food/list?page={self.request.GET.get('next', 1)}"
+        else:
+            return '/food/list'
 
+    def get_context_data(self, **kwargs):
+        kwargs['last_page'] = self.request.GET.get('next', 1)
+        return super().get_context_data(**kwargs)
 
 class ListFood(ListView):
     model = Food
     template_name_suffix = '_list'
     paginate_by = 5
     ordering = ['food_name']
+
+    def get_context_data(self, **kwargs):
+        kwargs['current_page'] = self.request.GET.get('page', 1)
+        return super().get_context_data(**kwargs)
 
 
 class DetailFood(DetailView):
@@ -66,15 +88,35 @@ class AddUnit(CreateView):
 
 class DeleteUnit(DeleteView):
     model = MeasuringUnit
-    success_url = '/unit/list'
     template_name_suffix = '_delete'
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return f"/unit/list?page={self.request.GET.get('next', 1)}"
+        else:
+            return '/unit/list'
+
+    def get_context_data(self, **kwargs):
+        kwargs['last_page'] = self.request.GET.get('next', 1)
+        return super().get_context_data(**kwargs)
+
 
 
 class UpdateUnit(UpdateView):
     model = MeasuringUnit
     fields = ['unit_name']
-    success_url = '/unit/list'
     template_name_suffix = '_update'
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return f"/unit/list?page={self.request.GET.get('next', 1)}"
+        else:
+            return '/unit/list'
+
+    def get_context_data(self, **kwargs):
+        kwargs['last_page'] = self.request.GET.get('next', 1)
+        return super().get_context_data(**kwargs)
+
 
 
 class ListUnit(ListView):
@@ -82,6 +124,10 @@ class ListUnit(ListView):
     template_name_suffix = '_list'
     paginate_by = 5
     ordering = ['unit_name']
+
+    def get_context_data(self, **kwargs):
+        kwargs['current_page'] = self.request.GET.get('page', 1)
+        return super().get_context_data(**kwargs)
 
 
 class AddRecipeCategory(CreateView):
@@ -102,15 +148,33 @@ class AddRecipeCategory(CreateView):
 
 class DeleteRecipeCategory(DeleteView):
     model = RecipeCategory
-    success_url = '/recipe_cat/list'
     template_name_suffix = '_delete'
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return f"/recipe_cat/list?page={self.request.GET.get('next', 1)}"
+        else:
+            return '/recipe_cat/list'
+
+    def get_context_data(self, **kwargs):
+        kwargs['last_page'] = self.request.GET.get('next', 1)
+        return super().get_context_data(**kwargs)
 
 
 class UpdateRecipeCategory(UpdateView):
     model = RecipeCategory
     fields = ['recipe_category_name']
-    success_url = '/recipe_cat/list'
     template_name_suffix = '_update'
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return f"/recipe_cat/list?page={self.request.GET.get('next', 1)}"
+        else:
+            return '/recipe_cat/list'
+
+    def get_context_data(self, **kwargs):
+        kwargs['last_page'] = self.request.GET.get('next', 1)
+        return super().get_context_data(**kwargs)
 
 
 class ListRecipeCategory(ListView):
@@ -118,6 +182,10 @@ class ListRecipeCategory(ListView):
     template_name_suffix = '_list'
     paginate_by = 5
     ordering = ['recipe_category_name']
+
+    def get_context_data(self, **kwargs):
+        kwargs['current_page'] = self.request.GET.get('page', 1)
+        return super().get_context_data(**kwargs)
 
 
 class AddFoodCategory(CreateView):
@@ -138,15 +206,33 @@ class AddFoodCategory(CreateView):
 
 class DeleteFoodCategory(DeleteView):
     model = FoodCategory
-    success_url = '/food_cat/list'
     template_name_suffix = '_delete'
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return f"/food_cat/list?page={self.request.GET.get('next', 1)}"
+        else:
+            return '/food_cat/list'
+
+    def get_context_data(self, **kwargs):
+        kwargs['last_page'] = self.request.GET.get('next', 1)
+        return super().get_context_data(**kwargs)
 
 
 class UpdateFoodCategory(UpdateView):
     model = FoodCategory
     fields = ['food_category_name']
-    success_url = '/food_cat/list'
     template_name_suffix = '_update'
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return f"/food_cat/list?page={self.request.GET.get('next', 1)}"
+        else:
+            return '/food_cat/list'
+
+    def get_context_data(self, **kwargs):
+        kwargs['last_page'] = self.request.GET.get('next', 1)
+        return super().get_context_data(**kwargs)
 
 
 class ListFoodCategory(ListView):
@@ -154,6 +240,10 @@ class ListFoodCategory(ListView):
     template_name_suffix = '_list'
     paginate_by = 5
     ordering = ['food_category_name']
+
+    def get_context_data(self, **kwargs):
+        kwargs['current_page'] = self.request.GET.get('page', 1)
+        return super().get_context_data(**kwargs)
 
 
 class AddRecipeBook(CreateView):
@@ -175,14 +265,32 @@ class AddRecipeBook(CreateView):
 class UpdateRecipeBook(UpdateView):
     model = RecipeBook
     fields = ['book_name', 'recipe_book_image']
-    success_url = '/recipe_book/list'
     template_name_suffix = '_update'
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return f"/recipe_book/list?page={self.request.GET.get('next', 1)}"
+        else:
+            return '/recipe_book/list'
+
+    def get_context_data(self, **kwargs):
+        kwargs['last_page'] = self.request.GET.get('next', 1)
+        return super().get_context_data(**kwargs)
 
 
 class DeleteRecipeBook(DeleteView):
     model = RecipeBook
-    success_url = '/recipe_book/list'
     template_name_suffix = '_delete'
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return f"/recipe_book/list?page={self.request.GET.get('next', 1)}"
+        else:
+            return '/recipe_book/list'
+
+    def get_context_data(self, **kwargs):
+        kwargs['last_page'] = self.request.GET.get('next', 1)
+        return super().get_context_data(**kwargs)
 
 
 class ListRecipeBook(ListView):
@@ -191,12 +299,25 @@ class ListRecipeBook(ListView):
     paginate_by = 5
     ordering = ['book_name']
 
+    def get_context_data(self, **kwargs):
+        kwargs['current_page'] = self.request.GET.get('page', 1)
+        return super().get_context_data(**kwargs)
+
 
 class UpdateAisle(UpdateView):
     model = Aisle
     fields = ['aisle_name']
-    success_url = '/aisle/list'
     template_name_suffix = '_update'
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return f"/aisle/list?page={self.request.GET.get('next', 1)}"
+        else:
+            return '/aisle/list'
+
+    def get_context_data(self, **kwargs):
+        kwargs['last_page'] = self.request.GET.get('next', 1)
+        return super().get_context_data(**kwargs)
 
 
 # This function 'naturally' sorts the list that contains numbers and words. I couldn't make it work with ListView
@@ -209,13 +330,23 @@ def listAisle(request):
     p = Paginator(tuple(obj_list), 5)
     page = request.GET.get('page')
     aisles = p.get_page(page)
-    return render(request, 'components/aisle_list.html', {'aisles': aisles})
+    current_page = request.GET.get('page', 1)
+    return render(request, 'components/aisle_list.html', {'aisles': aisles, 'current_page':current_page})
 
 
 class DeleteAisle(DeleteView):
     model = Aisle
-    success_url = '/aisle/list'
     template_name_suffix = '_delete'
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return f"/aisle/list?page={self.request.GET.get('next', 1)}"
+        else:
+            return '/aisle/list'
+
+    def get_context_data(self, **kwargs):
+        kwargs['last_page'] = self.request.GET.get('next', 1)
+        return super().get_context_data(**kwargs)
 
 
 class AddAisle(CreateView):

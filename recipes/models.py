@@ -49,3 +49,6 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.ingredient_name.food_name
+
+    class Meta():
+        ordering = ['ingredient_name']

@@ -12,14 +12,22 @@
         <a href="{{ recipe_book.recipe_book_image.url }}"><img class="rounded-circle article-img"
                 src="{{ recipe_book.recipe_book_image.url }}"></a>
         <div class="media-body">
-
             <h3>{{ recipe_book }}</h3>
+            {% if is_paginated %}
+            <a class="btn btn-secondary" style="background-color: red;"
+                href="{% url 'recipe_book_delete' pk=recipe_book.pk %}?next={{current_page}}">Delete
+                {{recipe_book}}</a>
+            <a class="btn btn-secondary" style="background-color: rgb(10, 124, 0);"
+                href="{% url 'recipe_book_update' pk=recipe_book.pk %}?next={{current_page}}">Update
+                {{recipe_book}}</a>
+            {% else %}
             <a class="btn btn-secondary" style="background-color: red;"
                 href="{% url 'recipe_book_delete' pk=recipe_book.pk %}">Delete
                 {{recipe_book}}</a>
             <a class="btn btn-secondary" style="background-color: rgb(10, 124, 0);"
                 href="{% url 'recipe_book_update' pk=recipe_book.pk %}">Update
                 {{recipe_book}}</a>
+                {% endif %}
         </div>
     </article><br>
     {% endfor %}

@@ -8,12 +8,21 @@
     {% for recipe_cat in object_list %}
     <div class="table" style="border-style: solid;border-width: 3px;border-color: black;"><br>
         <h3>{{ recipe_cat }}</h3>
+        {% if is_paginated %}
+        <a class="btn btn-secondary" style="background-color: red;"
+        href="{% url 'recipe_cat_delete' pk=recipe_cat.pk %}?next={{current_page}}">Delete
+        {{recipe_cat}}</a>
+    <a class="btn btn-secondary" style="background-color: rgb(10, 124, 0);"
+        href="{% url 'recipe_cat_update' pk=recipe_cat.pk %}?next={{current_page}}">Update
+        {{recipe_cat}}</a>
+        {% else %}
         <a class="btn btn-secondary" style="background-color: red;"
             href="{% url 'recipe_cat_delete' pk=recipe_cat.pk %}">Delete
             {{recipe_cat}}</a>
         <a class="btn btn-secondary" style="background-color: rgb(10, 124, 0);"
             href="{% url 'recipe_cat_update' pk=recipe_cat.pk %}">Update
             {{recipe_cat}}</a>
+            {% endif %}
     </div>
     {% endfor %}
     {% if is_paginated %}

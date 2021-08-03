@@ -91,6 +91,10 @@ class RecipeUpdate(UpdateView):
             "recipe_name").capitalize()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        kwargs['data'] = Recipe.objects.get(pk=self.kwargs.get('pk'))
+        return super().get_context_data(**kwargs)
+
 
 class RecipeDelete(DeleteView):
     model = Recipe
