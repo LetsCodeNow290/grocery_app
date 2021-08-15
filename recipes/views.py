@@ -11,18 +11,13 @@ from django.contrib import messages
 def start_recipe(request):
     if request.method == "POST":
         form = RecipeForm(request.POST or None)
-        validation = Recipe.objects.all()
         if form.is_valid():
-            recipe_name = form.cleaned_data.get('recipe_name')
-            # validation for duplicate recipes. May not work. Needs to be tested
-            for obj in validation:
-                if obj.recipe_name.lower() == recipe_name.lower():
-                    messages.error(request, 'That recipe already exists')
-                    return redirect(f'/recipe_list/{obj.pk}')
-                else:
-                    continue
             form.save()
             return redirect(f'/recipe/{form.save().pk}/add_ingredient')
+        else:
+            if ValidationError:
+                print(form.errors.values())
+                messages.error(request, form.errors)
     else:
         form = RecipeForm()
     return render(request, 'recipes/recipe_form.html', {'form': form})
