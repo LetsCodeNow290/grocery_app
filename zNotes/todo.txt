@@ -7,7 +7,7 @@ Recipe:
     - Test recipe validation
 
 Enhancements:
-    - Finish all the custom validation
+    - Investigate custom validation in the model. I tried to add custom validation and I cannot update an existing object. I need to de-dup recipe and food
     - Figure out how to redirect to last page on all paginated templates
     - Redirect to last page when adding food from the recipe creation template
     - scrape web for deals and coupons for Groceries

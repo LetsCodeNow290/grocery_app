@@ -12,12 +12,13 @@ def start_recipe(request):
     if request.method == "POST":
         form = RecipeForm(request.POST or None)
         if form.is_valid():
+            form.save(commit=False)
+            for obj in Recipe.objects.all():
+                if str(obj)  == str(form.cleaned_data.get('recipe_name')):
+                    messages.error(request, f"{str(form.cleaned_data.get('recipe_name'))} is already in the database")
+                    return redirect(f'/recipe/{form.save().pk}/add_ingredient')
             form.save()
             return redirect(f'/recipe/{form.save().pk}/add_ingredient')
-        else:
-            if ValidationError:
-                print(form.errors.values())
-                messages.error(request, form.errors)
     else:
         form = RecipeForm()
     return render(request, 'recipes/recipe_form.html', {'form': form})
@@ -41,10 +42,13 @@ def add_ingredient(request, pk):
                 Recipe.objects.get(pk=pk).ingredients.add(
                 Ingredient.objects.get(pk=form.save().pk))
             if add_food.is_valid():
+                add_food.save(commit=False)
+                for obj in Food.objects.all():
+                    if str(obj) == str(add_food.cleaned_data.get('food_name')):
+                         messages.error(request, f"{str(add_food.cleaned_data.get('food_name'))} is already in the database")
+                         return redirect(f'/recipe/{pk}/add_ingredient')
                 add_food.save()
                 messages.success(request, f"{add_food.cleaned_data.get('food_name')} was added to the database")
-        elif ValidationError:
-            messages.error(request, add_food.errors)
         return redirect(f'/recipe/{pk}/add_ingredient')
 
     else:

@@ -10,13 +10,8 @@ RECIPE_RATING = (
 )
 
 
-def recipe_de_dup_validation(value):
-    for obj in Recipe.objects.all():
-        if value == str(obj):
-            raise ValidationError(f'{value} is already an existing recipe')
-
 class Recipe(models.Model):
-    recipe_name = models.CharField(max_length=100, validators=[recipe_de_dup_validation])
+    recipe_name = models.CharField(max_length=100)
     recipe_category = models.ForeignKey(
         'components.RecipeCategory', on_delete=models.CASCADE, related_name='recipe_category')
     recipe_image = models.ImageField(

@@ -4,8 +4,9 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from natsort import natsorted
 from itertools import chain
 from django.core.paginator import Paginator
+from django.contrib import messages
 
-
+# Figure out how to add validation so a duplicate entry cannot exist
 class AddFood(CreateView):
     model = Food
     fields = ['food_name', 'food_category', 'food_aisle']
