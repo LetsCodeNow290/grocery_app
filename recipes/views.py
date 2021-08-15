@@ -47,6 +47,7 @@ def add_ingredient(request, pk):
                     if str(obj) == str(add_food.cleaned_data.get('food_name')):
                          messages.error(request, f"{str(add_food.cleaned_data.get('food_name'))} is already in the database")
                          return redirect(f'/recipe/{pk}/add_ingredient')
+                add_food.cleaned_data.get('food_name').capitalize()
                 add_food.save()
                 messages.success(request, f"{add_food.cleaned_data.get('food_name')} was added to the database")
         return redirect(f'/recipe/{pk}/add_ingredient')
