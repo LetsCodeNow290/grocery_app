@@ -7,6 +7,7 @@ Recipe:
     - Test recipe validation
 
 Enhancements:
+    - Finish all the custom validation
     - Figure out how to redirect to last page on all paginated templates
     - Redirect to last page when adding food from the recipe creation template
     - scrape web for deals and coupons for Groceries

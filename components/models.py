@@ -1,5 +1,6 @@
 from django.db import models
 from PIL import Image
+from django.core.exceptions import ValidationError
 
 
 class MeasuringUnit(models.Model):
@@ -62,8 +63,14 @@ class RecipeBook(models.Model):
     class Meta:
         ordering = ['book_name',]
 
+
+def food_de_dup_validation(value):
+    for obj in Food.objects.all():
+        if value == str(obj):
+            raise ValidationError(f'{value} already in the database')
+    
 class Food(models.Model):
-    food_name = models.CharField(max_length=100)
+    food_name = models.CharField(max_length=100, validators=[food_de_dup_validation])
     food_category = models.ForeignKey(
         'FoodCategory', on_delete=models.CASCADE, related_name='food_category')
     food_aisle = models.ForeignKey('Aisle', on_delete=models.CASCADE, related_name='food_aisle', blank=True, null=True, default=Aisle.get_default_pk)

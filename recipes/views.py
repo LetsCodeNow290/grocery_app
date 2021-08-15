@@ -46,14 +46,10 @@ def add_ingredient(request, pk):
                 Recipe.objects.get(pk=pk).ingredients.add(
                 Ingredient.objects.get(pk=form.save().pk))
             if add_food.is_valid():
-                add_food.save(commit=False)
-                for obj in food_validation:
-                    if str(obj) == str(add_food.cleaned_data.get('food_name')):
-                        messages.error(
-                            request, f'{str(obj)} is already in the database')
-                        return redirect(f'/recipe/{pk}/add_ingredient')
                 add_food.save()
                 messages.success(request, f"{add_food.cleaned_data.get('food_name')} was added to the database")
+        elif ValidationError:
+            messages.error(request, add_food.errors)
         return redirect(f'/recipe/{pk}/add_ingredient')
 
     else:

@@ -1,7 +1,0 @@
-Date Picker:
-    add the following to the forms.py file:
-        class DateInput(forms.DateInput):
-            input_type = "date"
-    
-    then add the following to the Meta class of your form class that you need a date picker for:
-        widgets = {'field_name' : DateInput(), }
