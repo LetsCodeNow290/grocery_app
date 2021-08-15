@@ -30,7 +30,10 @@ class DeleteFood(DeleteView):
 
     def get_success_url(self, **kwargs):
         if self.request.GET.get('next'):
-            return f"/food/list?page={self.request.GET.get('next', 1)}"
+            try:
+                return f"/food/list?page={self.request.GET.get('next', 1)}"
+            except:
+                return f"/food/list?page={self.request.GET.get('next', 1) - 1}"
         else:
             return '/food/list'
 

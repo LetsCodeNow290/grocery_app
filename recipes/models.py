@@ -4,6 +4,7 @@ from PIL import Image
 
 RECIPE_RATING = (
     ("Don't make this again", "Don't make this again"),
+    ("Haven't Made it Yet", "Haven't Made it yet"),
     ("Not bad", "Not bad"),
     ("Pretty good", "Pretty good"),
     ("Excellent", "Excellent"),
