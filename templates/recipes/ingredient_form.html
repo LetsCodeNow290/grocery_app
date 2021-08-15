@@ -28,6 +28,19 @@
         <li>{{ ingred }} x {{ingred.ingredient_quantity}}</li>
         {% endfor %}
     </p>
-
+    <div class='content-section'>
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class='form-group'>
+                <legend class="border-bottom mb-4">Add a food to the database</legend>
+                {{ add_food|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class='btn btn-outline-info' type='submit'>Submit</button>
+    
+            </div>
+        </form>
+    
+    </div>
 </div>
 {% endblock %}

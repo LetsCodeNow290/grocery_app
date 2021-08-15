@@ -1,6 +1,6 @@
 from django import forms
 from .models import *
-from components.models import RecipeCategory
+from components.models import RecipeCategory, Food
 from groceries.models import GroceryList
 import django_filters
 
@@ -10,6 +10,12 @@ class RecipeForm(forms.ModelForm):
         model = Recipe
         fields = '__all__'
         exclude = ['ingredients', ]
+
+
+class AddFoodForm(forms.ModelForm):
+    class Meta:
+        model = Food
+        fields = '__all__'
 
 
 class IngredientForm(forms.ModelForm):

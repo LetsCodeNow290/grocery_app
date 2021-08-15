@@ -31,23 +31,36 @@ def start_recipe(request):
 def add_ingredient(request, pk):
     if request.method == 'POST':
         form = IngredientForm(request.POST or None)
-        validation = Recipe.objects.get(pk=pk).ingredients.all()
-        if form.is_valid:
-            form.save(commit=False)
-            for obj in validation:
-                if str(obj) == str(form.cleaned_data.get('ingredient_name')):
-                    messages.error(
-                        request, f'{str(obj)} is already in the recipe')
-                    return redirect(f'/recipe/{pk}/add_ingredient')
-            form.save()
-            Recipe.objects.get(pk=pk).ingredients.add(
+        add_food = AddFoodForm(request.POST or None)
+        recipe_validation = Recipe.objects.get(pk=pk).ingredients.all()
+        food_validation = Food.objects.all()
+        if form.is_valid() or add_food.is_valid():
+            if form.is_valid():
+                form.save(commit=False)
+                for obj in recipe_validation:
+                    if str(obj) == str(form.cleaned_data.get('ingredient_name')):
+                        messages.error(
+                            request, f'{str(obj)} is already in the recipe')
+                        return redirect(f'/recipe/{pk}/add_ingredient')
+                form.save()
+                Recipe.objects.get(pk=pk).ingredients.add(
                 Ingredient.objects.get(pk=form.save().pk))
+            if add_food.is_valid():
+                add_food.save(commit=False)
+                for obj in food_validation:
+                    if str(obj) == str(add_food.cleaned_data.get('food_name')):
+                        messages.error(
+                            request, f'{str(obj)} is already in the database')
+                        return redirect(f'/recipe/{pk}/add_ingredient')
+                add_food.save()
+                messages.success(request, f"{add_food.cleaned_data.get('food_name')} was added to the database")
         return redirect(f'/recipe/{pk}/add_ingredient')
 
     else:
         form = IngredientForm()
         data = Recipe.objects.get(pk=pk)
-    return render(request, 'recipes/ingredient_form.html', {'form': form, 'data': data})
+        add_food = AddFoodForm()
+    return render(request, 'recipes/ingredient_form.html', {'form': form, 'data': data, 'add_food':add_food})
 
 
 def recipe_to_list(request, pk):
@@ -87,9 +100,9 @@ class RecipeUpdate(UpdateView):
         'recipe_location',
         'location_page_number'
     ]
-    #success_url = "/recipe_list"
     template_name_suffix = '_update_form'
 
+    # See paginator note on this. This part returns the user to the previous paginated page
     def get_success_url(self, **kwargs):
         if self.request.GET.get('next'):
             return f"/recipe_list?page={self.request.GET.get('next', 1)}"

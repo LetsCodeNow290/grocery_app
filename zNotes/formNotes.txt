@@ -1,0 +1,18 @@
+I don't know how to GET or POST two or more forms with class based view, so the next two tips are strictly function views. Be sure to give the forms different names in the view. Otherwise the template will not work
+    Submitting One of many forms on a page OR submitting one form without submitting others:
+        In the POST section of a function view, use 'or' to chain all forms in one if valid statement
+            - example: if form_one.is_valid() or form_two.is_valid():
+        Then use if statements for each form:
+            - example:      if form_one.is_valid():
+                                do something
+                            if form_two.is_valid():
+                                do something else
+
+    Submitting many forms with one submit button: 
+        Much eaiser than the above action
+        In the POST section of a function view, use 'and' to chain all the forms in one if valid statement
+        Then use the .save() method for each form.
+        Example:
+            if form_one.is_valid() and form_two.is_valid():
+                form_one.save()
+                form_two.save()
