@@ -66,8 +66,7 @@ class RecipeBook(models.Model):
     
 class Food(models.Model):
     food_name = models.CharField(max_length=100)
-    food_category = models.ForeignKey(
-        'FoodCategory', on_delete=models.CASCADE, related_name='food_category')
+    food_category = models.ForeignKey('FoodCategory', on_delete=models.CASCADE, related_name='food_category')
     food_aisle = models.ForeignKey('Aisle', on_delete=models.CASCADE, related_name='food_aisle', blank=True, null=True, default=Aisle.get_default_pk)
 
     def __str__(self):
