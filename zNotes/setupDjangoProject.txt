@@ -16,7 +16,12 @@ Navigate to the django project directory (Example: C:\Users\username\WorkingDire
 Type (pip freeze) to ensure pip is installed in the virtual environment
 Type (pip install -r requirements.txt) to install everything for the project
 Create another superuser with (python manage.py createsuperuser) and work through the prompts
-Start the server with (python manage.py runserver)
+If you want to initialize a database fill, this would be the time to do that
+Start the server to run on only your local machine with (python manage.py runserver)
+***To start the server to run on your local NETWORK use (python manage.py runserver 0.0.0.0.:8000)
+    *In the command above "0.0.0.0" will default to your machine's IP address. You could also just use you machine's IP address.
+    *The port number following the "0.0.0.0", "8000" in the example above" could be anything. Use port "80" to make life easier but you cannot have any other webservers running on your machine. I'll explain on the next line.
 Hopefully the server starts without any issues
 Open a browser and type (localhost:8000) OR (127.0.0.1:8000) and log in
+    *If you are making the site available to your local network and you used port 80, all you have to type in the browser is the webserver's IP. No need to type in the port number. This makes things easier if you want to create a DNS entry for your project. 
 Use ctrl+C in the command prompt to stop the server

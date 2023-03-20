@@ -325,7 +325,7 @@ class UpdateAisle(UpdateView):
 
 
 # This function 'naturally' sorts the list that contains numbers and words. I couldn't make it work with ListView
-# Using the union() function resorts the objects using the pk
+# Using the union() function re-sorts the objects using the pk
 # To access the 'obj_list' info in the template, use .object_list
 def listAisle(request):
     natural_list = natsorted([str(x) for x in Aisle.objects.all()])

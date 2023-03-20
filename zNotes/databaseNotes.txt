@@ -9,3 +9,6 @@ execute the following:
 ContentType.objects.all().delete()
 then quit the shell. 
 It should load after that
+
+An alternative to loading json data, you could load data with the initializing script called initialize_data.py
+I haven't worked on this much but it should work with little effort. Just add items to the text files in the "InitialData" folder.
