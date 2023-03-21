@@ -15,6 +15,7 @@ Should now look like this ("(venv)C:\Users\username\WorkingDirectory\")
 Navigate to the django project directory (Example: C:\Users\username\WorkingDirectory\django_project\)
 Type (pip freeze) to ensure pip is installed in the virtual environment
 Type (pip install -r requirements.txt) to install everything for the project
+Migrate the changes with (python manage.py migrate)
 Create another superuser with (python manage.py createsuperuser) and work through the prompts
 If you want to initialize a database fill, this would be the time to do that
 Start the server to run on only your local machine with (python manage.py runserver)
