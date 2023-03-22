@@ -52,7 +52,7 @@
 {% block content2 %}
 <div class="content-section">
 <h2>Quick View of All Foods</h2>
-<p class="article-content"></p>{% for aisle in aisles %}
+<p class="article-content"></p>{% for obj, aisle in aisles.object_list %}
 <li>{{ aisle }}</li>
 {% endfor %}
 </p>
