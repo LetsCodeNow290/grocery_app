@@ -53,3 +53,12 @@
 </div>
 
 {% endblock %}
+{% block content2 %}
+<div class="content-section">
+<h2>Quick View of All Foods</h2>
+<p class="article-content"></p>{% for food in object_all %}
+<li>{{ food }}</li>
+{% endfor %}
+</p>
+</div>
+{% endblock %}

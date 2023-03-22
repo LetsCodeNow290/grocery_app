@@ -61,11 +61,12 @@ class UpdateFood(UpdateView):
 class ListFood(ListView):
     model = Food
     template_name_suffix = '_list'
-    paginate_by = 5
+    paginate_by = 10
     ordering = ['food_name']
 
     def get_context_data(self, **kwargs):
         kwargs['current_page'] = self.request.GET.get('page', 1)
+        kwargs['object_all'] = Food.objects.order_by("food_name")
         return super().get_context_data(**kwargs)
 
 

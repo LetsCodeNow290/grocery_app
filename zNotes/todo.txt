@@ -1,4 +1,5 @@
 Components
+    - Add a search feature for all the categories
 
 Groceries
 

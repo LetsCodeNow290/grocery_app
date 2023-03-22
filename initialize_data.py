@@ -1,5 +1,7 @@
 #! /usr/bin/python3
 
+import django
+django.setup()
 from components.models import *
 import os
 try:
