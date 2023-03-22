@@ -132,6 +132,7 @@ class ListUnit(ListView):
 
     def get_context_data(self, **kwargs):
         kwargs['current_page'] = self.request.GET.get('page', 1)
+        kwargs['object_all'] = MeasuringUnit.objects.order_by("unit_name")
         return super().get_context_data(**kwargs)
 
 
@@ -190,6 +191,7 @@ class ListRecipeCategory(ListView):
 
     def get_context_data(self, **kwargs):
         kwargs['current_page'] = self.request.GET.get('page', 1)
+        kwargs['object_all'] = RecipeCategory.objects.order_by("recipe_category_name")
         return super().get_context_data(**kwargs)
 
 
@@ -248,6 +250,7 @@ class ListFoodCategory(ListView):
 
     def get_context_data(self, **kwargs):
         kwargs['current_page'] = self.request.GET.get('page', 1)
+        kwargs['object_all'] = FoodCategory.objects.order_by("food_category_name")
         return super().get_context_data(**kwargs)
 
 
@@ -306,6 +309,7 @@ class ListRecipeBook(ListView):
 
     def get_context_data(self, **kwargs):
         kwargs['current_page'] = self.request.GET.get('page', 1)
+        kwargs['object_all'] = RecipeBook.objects.order_by("book_name")
         return super().get_context_data(**kwargs)
 
 
@@ -332,7 +336,7 @@ def listAisle(request):
     natural_list = natsorted([str(x) for x in Aisle.objects.all()])
     obj_list = [(f"{Aisle.objects.filter(aisle_name=x)[0]}", Aisle.objects.filter(
         aisle_name=x)[0]) for x in natural_list]
-    p = Paginator(tuple(obj_list), 5)
+    p = Paginator(tuple(obj_list), 10)
     page = request.GET.get('page')
     aisles = p.get_page(page)
     current_page = request.GET.get('page', 1)
