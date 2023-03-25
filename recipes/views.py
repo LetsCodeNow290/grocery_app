@@ -7,14 +7,15 @@ from groceries.models import GroceryList
 from django_filters.views import FilterView
 from django.contrib import messages
 
-
+# The validation on this is not working
+# I think the redirect is wrong too
 def start_recipe(request):
     if request.method == "POST":
         form = RecipeForm(request.POST or None)
         if form.is_valid():
             form.save(commit=False)
             for obj in Recipe.objects.all():
-                if str(obj)  == str(form.cleaned_data.get('recipe_name')):
+                if str(obj)  == str(form.cleaned_data.get('recipe_name')).title():
                     messages.error(request, f"{str(form.cleaned_data.get('recipe_name'))} is already in the database")
                     return redirect(f'/recipe/{form.save().pk}/add_ingredient')
             form.save()
@@ -23,13 +24,12 @@ def start_recipe(request):
         form = RecipeForm()
     return render(request, 'recipes/recipe_form.html', {'form': form})
 
-
+# The validation in this isn't working right
 def add_ingredient(request, pk):
     if request.method == 'POST':
         form = IngredientForm(request.POST or None)
         add_food = AddFoodForm(request.POST or None)
         recipe_validation = Recipe.objects.get(pk=pk).ingredients.all()
-        food_validation = Food.objects.all()
         if form.is_valid() or add_food.is_valid():
             if form.is_valid():
                 form.save(commit=False)
@@ -43,11 +43,10 @@ def add_ingredient(request, pk):
                 Ingredient.objects.get(pk=form.save().pk))
             if add_food.is_valid():
                 add_food.save(commit=False)
-                for obj in Food.objects.all():
-                    if str(obj) == str(add_food.cleaned_data.get('food_name')):
-                         messages.error(request, f"{str(add_food.cleaned_data.get('food_name'))} is already in the database")
-                         return redirect(f'/recipe/{pk}/add_ingredient')
-                add_food.cleaned_data.get('food_name').capitalize()
+                food_name_field = str(add_food.cleaned_data.get('food_name')).title()
+                if Food.objects.filter(food_name=food_name_field).exists():
+                    messages.error(request, f"{food_name_field} already exists in the database")
+                    return redirect(request.path)
                 add_food.save()
                 messages.success(request, f"{add_food.cleaned_data.get('food_name')} was added to the database")
         return redirect(f'/recipe/{pk}/add_ingredient')

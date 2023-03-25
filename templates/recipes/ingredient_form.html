@@ -21,9 +21,10 @@
 {% endblock %}
 
 {% block content2 %}
+
 <div class="content-section">
     <h2>All of the Ingredients</h2>
-    
+   
     <p class="article-content"> {% for ingred in data.ingredients.all %}
         <li>{{ ingred }} x {{ingred.ingredient_quantity}}</li>
         {% endfor %}

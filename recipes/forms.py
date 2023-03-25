@@ -18,6 +18,8 @@ class AddFoodForm(forms.ModelForm):
         fields = '__all__'
 
 
+
+
 class IngredientForm(forms.ModelForm):
     class Meta:
         model = Ingredient

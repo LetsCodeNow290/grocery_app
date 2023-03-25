@@ -1,23 +1,18 @@
-from django.shortcuts import render, reverse, redirect, HttpResponseRedirect
+from django.shortcuts import render, reverse, redirect
 from .models import *
+from .forms import *
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from natsort import natsorted
-from itertools import chain
 from django.core.paginator import Paginator
-from django.contrib import messages
 
-# Figure out how to add validation so a duplicate entry cannot exist
+
 class AddFood(CreateView):
     model = Food
-    fields = ['food_name', 'food_category', 'food_aisle']
+    form_class = FoodForm
+    #fields = ['food_name', 'food_category', 'food_aisle']
     success_url = '/home_admin'
 
-    # This function capitolizes every entry. This helps with sorting in the list view
-    def form_valid(self, form):
-        form.instance.food_name = form.cleaned_data.get(
-            "food_name").capitalize()
-        return super().form_valid(form)
-
+   
     def get_context_data(self, **kwargs):
         kwargs['object_list'] = Food.objects.order_by(
             'food_name')
@@ -77,13 +72,10 @@ class DetailFood(DetailView):
 
 class AddUnit(CreateView):
     model = MeasuringUnit
-    fields = ['unit_name']
+    form_class = MeasuringUnitForm
     success_url = '/home_admin'
 
-    def form_valid(self, form):
-        form.instance.unit_name = form.cleaned_data.get(
-            "unit_name").capitalize()
-        return super().form_valid(form)
+
 
     def get_context_data(self, **kwargs):
         kwargs['object_list'] = MeasuringUnit.objects.order_by(
@@ -138,13 +130,10 @@ class ListUnit(ListView):
 
 class AddRecipeCategory(CreateView):
     model = RecipeCategory
-    fields = ['recipe_category_name']
+    form_class = RecipeCategoryForm
     success_url = '/home_admin'
 
-    def form_valid(self, form):
-        form.instance.recipe_category_name = form.cleaned_data.get(
-            "recipe_category_name").capitalize()
-        return super().form_valid(form)
+
 
     def get_context_data(self, **kwargs):
         kwargs['object_list'] = RecipeCategory.objects.order_by(
@@ -197,13 +186,10 @@ class ListRecipeCategory(ListView):
 
 class AddFoodCategory(CreateView):
     model = FoodCategory
-    fields = ['food_category_name']
+    form_class = FoodCategoryForm
     success_url = '/home_admin'
 
-    def form_valid(self, form):
-        form.instance.food_category_name = form.cleaned_data.get(
-            "food_category_name").capitalize()
-        return super().form_valid(form)
+
 
     def get_context_data(self, **kwargs):
         kwargs['object_list'] = FoodCategory.objects.order_by(
@@ -256,13 +242,10 @@ class ListFoodCategory(ListView):
 
 class AddRecipeBook(CreateView):
     model = RecipeBook
-    fields = ['book_name', 'recipe_book_image']
+    form_class = RecipeBookForm
     success_url = '/home_admin'
 
-    def form_valid(self, form):
-        form.instance.book_name = form.cleaned_data.get(
-            "book_name").capitalize()
-        return super().form_valid(form)
+
 
     def get_context_data(self, **kwargs):
         kwargs['object_list'] = RecipeBook.objects.order_by(
@@ -360,13 +343,10 @@ class DeleteAisle(DeleteView):
 
 class AddAisle(CreateView):
     model = Aisle
-    fields = ['aisle_name']
+    form_class = AisleForm
     success_url = '/home_admin'
 
-    def form_valid(self, form):
-        form.instance.aisle_name = form.cleaned_data.get(
-            "aisle_name").capitalize()
-        return super().form_valid(form)
+
 
     def get_context_data(self, **kwargs):
         natural_list = natsorted([str(x) for x in Aisle.objects.all()])
