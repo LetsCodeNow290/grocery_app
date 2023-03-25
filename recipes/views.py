@@ -17,7 +17,7 @@ def start_recipe(request):
             for obj in Recipe.objects.all():
                 if str(obj)  == str(form.cleaned_data.get('recipe_name')).title():
                     messages.error(request, f"{str(form.cleaned_data.get('recipe_name'))} is already in the database")
-                    return redirect(f'/recipe/{form.save().pk}/add_ingredient')
+                    return redirect(request.path)
             form.save()
             return redirect(f'/recipe/{form.save().pk}/add_ingredient')
     else:
