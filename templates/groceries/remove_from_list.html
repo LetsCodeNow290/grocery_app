@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+<form method="post">
+    {% csrf_token %}
+    <table>
+        <thead>
+            <tr>
+                <th>{{ list_name }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in ingredients.values %}
+            <tr>
+                <td>{{ item }}</td>
+                <td><input type="checkbox" name="delete[]" value="{{ book.pk }}" /></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <input type="submit" value="Delete Selected" />
+</form>
+
+
+
+
+{% endblock %}
+{% block content2 %}
+
+{% endblock %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+    {% endfor %}
+</ul>
+{% endif %}

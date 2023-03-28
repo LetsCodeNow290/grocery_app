@@ -92,7 +92,7 @@ def print_list(request, pk):
     recipe_list = [{'Recipes': str(x)} for x in GroceryList.objects.get(
         pk=pk).list_recipes.all()]
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="csv_test.csv'
+    response['Content-Disposition'] = f'attachment; filename="{GroceryList.objects.get(pk=pk).list_name}List.csv'
 
     recipe_fieldnames = ['Recipes']
     recipe_writer = csv.DictWriter(response, fieldnames=recipe_fieldnames)
@@ -109,6 +109,37 @@ def print_list(request, pk):
         writer.writerow(item)
     return response
 
-def remove_items_from_list(request, pk):
+def grocery_detail_and_remove(request, pk):
     '''This view removes items from a grocery list'''
-    pass
+    if request.method == 'POST':
+        obj = get_object_or_404(GroceryList, pk=pk)
+        '''Add logic to remove items from the list'''
+        return HttpResponseRedirect(request.path_info)
+    else:
+        # This try statement makes the ingredient list
+        try:
+            obj = GroceryList.make_list(
+                GroceryList.objects.get(pk=pk))
+            ingredients = {}
+            for item in obj:
+                try:
+                    ingredients[item['food_name']
+                                ] = f"{item['food_name']} x {int(item['quantity'])}"
+                except:
+                    ingredients[item['food_name']
+                                ] = f"{item['food_name']} x {item['quantity']}"
+
+        except:
+
+            ingredients = None
+        # This try is used only for the list object name
+        try:
+            list_name = GroceryList.objects.get(pk=pk)
+        except:
+            list_name = None
+        # This try statement makes a list of the chosen recipes
+        try:
+            recipe_list = GroceryList.objects.get(pk=pk).list_recipes.all()
+        except:
+            recipe_list = None
+    return render(request, 'groceries/remove_from_list.html', {'recipe_list': recipe_list, 'ingredients': ingredients, 'list_name': list_name})

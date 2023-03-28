@@ -73,6 +73,8 @@ urlpatterns = [
     path('add_to_list/<int:pk>/print_list', print_list, name='print_list'),
     path('', home_view, name='home'),
     path('recipe_update/', RecipeUpdate.as_view(), name='recipe_update'),
+    path('grocery_detail_and_remove/<int:pk>',
+         grocery_detail_and_remove, name='grocery_detail_and_remove'),
 
 ]
 

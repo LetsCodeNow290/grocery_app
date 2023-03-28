@@ -54,7 +54,7 @@
     {% for list in list_of_lists %}
     <ul>
         <li>
-            <a href="{% url 'add_to_list' pk=list.pk %}">{{ list }}</a>
+            <a href="{% url 'grocery_detail_and_remove' pk=list.pk %}">{{ list }}</a>
         </li>
     </ul>
     {% endfor %}

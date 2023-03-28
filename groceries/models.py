@@ -1,6 +1,6 @@
 from django.db import models
 from components.models import Food, MeasuringUnit
-from recipes.models import Recipe, Ingredient
+from recipes.models import Recipe
 from datetime import datetime as dt
 from natsort import natsorted
 

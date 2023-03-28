@@ -7,8 +7,7 @@ from groceries.models import GroceryList
 from django_filters.views import FilterView
 from django.contrib import messages
 
-# The validation on this is not working
-# I think the redirect is wrong too
+
 def start_recipe(request):
     if request.method == "POST":
         form = RecipeForm(request.POST or None)
@@ -24,7 +23,6 @@ def start_recipe(request):
         form = RecipeForm()
     return render(request, 'recipes/recipe_form.html', {'form': form})
 
-# The validation in this isn't working right
 def add_ingredient(request, pk):
     if request.method == 'POST':
         form = IngredientForm(request.POST or None)
@@ -82,6 +80,10 @@ class RecipeFilterList(FilterView):
     def get_context_data(self, **kwargs):
         kwargs['current_page'] = self.request.GET.get('page', 1)
         return super().get_context_data(**kwargs)
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.order_by('recipe_name')
 
 
 class RecipeUpdate(UpdateView):
