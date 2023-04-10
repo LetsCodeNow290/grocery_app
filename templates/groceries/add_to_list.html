@@ -33,19 +33,22 @@
 
 {% endblock %}
 {% block content2 %}
+ <a class="btn btn-secondary" href="{% url 'choose_list' %}">Back</a>
 <h1>{{ list_name }}</h1>
 <h3>Recipes</h3>
 {% for recipe in recipe_list %}
 <li>{{ recipe }}</li>
 {% endfor %}
+
 <br>
 <h3>Grocery List</h3>
-{% for item in ingredients.values %}
-<li>{{ item }}</li>
+{% for item in ingredients %}
+<li>{{ item.food_name }} x {{ item.quantity }} {{ item.quantity_unit_name }}</li>
 {% endfor %}
 {% if list_name.pk %}
 <br><a href="{% url 'print_list' pk=list_name.pk %}" class="btn btn-outline-info">Print this list</a>
 {% endif %}
+
 {% endblock %}
 {% if messages %}
 <ul class="messages">

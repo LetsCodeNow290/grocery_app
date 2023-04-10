@@ -44,7 +44,10 @@ INSTALLED_APPS = [
     'groceries.apps.GroceriesConfig',
     'natsort',
     'django_filters',
+    'django.forms',
 ]
+
+# this is needed for a custom widget FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -69,6 +72,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
             ],
         },
     },

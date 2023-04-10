@@ -18,12 +18,22 @@ class AddFoodForm(forms.ModelForm):
         fields = '__all__'
 
 
-
+QUANTITY_FRAC = [
+    (0,'0'),
+    (.75,'3/4'),
+    (.66, '2/3'),
+    (.5, '1/2'),
+    (.33, '1/3'),
+    (.25, '1/4'),
+    (.125, '1/8'),
+]
 
 class IngredientForm(forms.ModelForm):
+    fraction_quantity = forms.ChoiceField(choices=QUANTITY_FRAC)
+    whole_number_quantitiy = forms.IntegerField()
     class Meta:
         model = Ingredient
-        fields = '__all__'
+        fields = 'ingredient_name', 'whole_number_quantitiy', 'fraction_quantity', 'quantity_unit'
 
 
 class RecipeFilter(django_filters.FilterSet):

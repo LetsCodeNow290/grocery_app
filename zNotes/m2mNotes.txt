@@ -5,3 +5,28 @@ Start in the model with ManyToManyField. related is supposed to help with data r
 You will likey have to write a funciton in the model to handle the m2m data
 
 In this app, the function to sort the m2m data is called make_list. It is used in the groceries/views.py file
+
+Updating and remvoing objects from an m2m field is a bit complicated. Or it took me forever to figure out at least.
+    1. Be sure you declared a "related_name" in the m2m field. If not, do that.
+    2. Start with a ModelForm of the model containing the objects, not the model containing the m2m field. For example, To remove groceries from a GroceryList, your ModelForm's model should be ChooseItem. Not GroceryList. I'll call the model with the m2m field the parent model and the model containing the objects the child model.
+    3. Next create a modelformset_factory using the newly created form.
+    4. Then, start the view method by calling an existing parent object, GroceryList in this case.
+    5. Next, in the else statement, call the form and then set the "queryset" equal to the child model, ChooseItem in this case, filtering for the related_name created in step 1. For example, ChooseItem.objects.filter(items_list=grocery_list). "grocery_list" is the existing parent model. This action basically finds all the child objects in the parent object by looking at the child object attributes rather than finding them directly by calling the field name in a parent object query.
+    6. At this point, you have all the info in you formset but the formset object info is hard to access. So I did a seperate query of the child objects with the same filter and made a new queryset. So, my view context was {"grocery_list":grocery_list,"individual_form":individual_form, 'items_list': items_list} where the form and "item_list" were basically the same data except the items_list was easy to access object info.
+    7. Start the template with the normal CSRF token and format the data however you want. Once you get to listing the objects that need to be modified, start with a management form statement, {{ individual_form.management_form }}. I'm not exactly sure what this does but it has something to do with formset validation.
+    8. Then start the iteration. I itereated through both lists at the same time with the following code. ```
+                {% for field in individual_form %}{% for item in items_list %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                ```
+    9. I listed the object info as I wanted then I included a "delete" checkbox. THis is the code from that: <td><input type="checkbox" name="delete" value="{{ item.pk }}"></td>
+        Be sure to set a value to item.pk so you can access this later in your view
+    10. Lastly, I displayed the only actual field with a crispy tag. 
+    11. Close the if statement first then both of the for loops and go back to your view.
+    12. Start as normal by calling the form with a request.POST argument and then the same child object filter. 
+    13. Create a list of items to be deleted by creating a variable equal to "request.POST.getlist("delete")". This is all the item that were checked with the custom checkbox created in step 9. This is only a list of pk's.
+    14. Call the is_valid method on the formset and save the form. In my case the only info in the form was updating the quantity of each item.
+    15. Loop through the checked items for deletion. Start by removing the m2m relationship by calling the item through the parent object and using the .remove() function. that function requires an object as an argument and you already saved the child object pk in the checkbox.
+    16. Then you can delete the child object if you want. 
+    17. Your done!
+
+Trying to combine data is an m2m field. In this case GroceryList has a items_list field that I want to combine items if contained in the field and add it if it isn't in the field.

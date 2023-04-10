@@ -2,19 +2,6 @@ from django.db import models
 from PIL import Image
 
 
-class MeasuringUnit(models.Model): 
-    unit_name = models.CharField(max_length=20)
-
-    def save(self, *args, **kwargs):
-        self.unit_name = self.unit_name.title()
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.unit_name
-
-    class Meta():
-        ordering = ['unit_name']
-
 
 class RecipeCategory(models.Model):
     recipe_category_name = models.CharField(max_length=100)

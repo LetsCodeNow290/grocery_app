@@ -5,12 +5,6 @@ from components.models import *
 
 class BuildRecipeTest(TestCase):
     def setUp(self):
-        MeasuringUnit.objects.create(unit_name='tablespoon')
-        MeasuringUnit.objects.create(unit_name='teaspoon')
-        MeasuringUnit.objects.create(unit_name='none')
-        MeasuringUnit.objects.create(unit_name='cup(s)')
-        MeasuringUnit.objects.create(unit_name='pinch')
-        MeasuringUnit.objects.create(unit_name='pint')
         FoodCategory.objects.create(food_category_name='meat')
         FoodCategory.objects.create(food_category_name='vegetable')
         FoodCategory.objects.create(food_category_name='bean')

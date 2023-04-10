@@ -1,112 +1,112 @@
-Chicken - Breast, Meat-Poultry
-Chicken - Thigh, Meat-Poultry
-Chicken - Whole, Meat-Poultry
-Chicken - Half, Meat-Poultry
-Chicken - Tenderloin, Meat-Poultry
-Beef - Ground, Meat-Beef
-Beef - Flank Steak, Meat-Beef
-Beef - Strip Steak, Meat-Beef
-Beef - Roast, Meat-Beef
-Beef - Tenderloin, Meat-Beef
-Beef - Filet, Meat-Beef
-Beef - NY Strip Steak, Meat-Beef
-Pasta - Rigatoni, Pasta
-Pasta - Elbow, Pasta
-Pasta - Farfalle, Pasta
-Pasta - Penne, Pasta
-Pasta - Bowtie, Pasta
-Pasta - Other, Pasta
-Pork - Chops, Meat-Pork
-Pork - Tenderloin, Meat-Pork
-Pork - Other, Meat-Pork
-Peanut Butter, Spreads
-Nuttella, Spreads
-Popcorn - Kernal, Snack
-Popcorn - Bag, Snack
-Cooking Spray, Oils
-Sesame Oil, Oils
-Olive Oil, Oils
-Vegetable Oil, Oils
-Canola Oil, Oils
-Oil -Other, Oils
-Vinegar - Rice, Condiments
-Vinegar - White, Condiments
-Vinegar - Balsamic, Condiments
-Vinegar - Red Wine, Condiments
-Vinegar - Other, Condiments
-Old Bay, Spice
-Salt - Table, Spice
-Salt - Kosher, Spice
-Pepper - Fine, Spice
-Pepper - Whole Corn, Spice
-Pepper - Corse, Spice
-Flour, Baking
-Bisquick, Baking
-Baking Powder, Baking
-Confectioners Sugar, Baking
-Sugar, Baking
-Corn Starch, Baking
-Corn Meal, Baking
-Cheese - Shredded Chedder, Dairy
-Cheese - Pepper Jack, Dairy
-Cheese - Shredded Colby Jack, Dairy
-Cheese - Sliced American, Dairy
-Cheese - Mozzerlla Stick, Dairy
-Cheese - Mozzerlla Fresh, Dairy
-Cheese - Mozzerlla Shredded, Dairy
-Cheese - Velveeta, Dairy
-Summer Squash, Vegtable - Fresh
-Cucumber, Vegtable - Fresh
-Zucchini, Vegtable - Fresh
-Tomato - Roma, Vegtable - Fresh
-Tomato - Cherry, Vegtable - Fresh
-Tomato - Vine, Vegtable - Fresh
-Corn, Vegtable - Fresh
-Corn, Vegtable - Canned
-Corn - Creamed, Vegtable - Canned
-BBQ - Sweet Baby Ray's, Condiments
-BBQ - Sticky Fingers, Condiments
-Mustard - Stone Ground, Condiments
-Mustard - Yellow, Condiments
-Mustard - Dijon, Condiments
-Maple Syrup, Toppings
-Hot Fudge, Toppings
-Pancake Syrup, Toppings
-Honey, Condiments
-White Chedder Powder, Condiments
-Olive - Spanish, Condiments
-Canned Red Peppers, Condiments
-Canned Roasted Peppers, Condiments
-Olive - Kalamata, Condiments
-Oyster Sauce, Condiments
-Pickle Spears, Condiments
-Pickle Chips, Condiments
-Mayonnaise, Condiments
-Salsa - Verde, Condiments
-Salse - Regular, Condiments
-Salsa - Fresh, Condiments
-Italian Vinaigrette, Condiments
-Grits, Grain
-Oats, Grain
-Orzo, Pasta
-Rice - Minute, Grain
-Rice - Long Grain, Grain
-Rice - Basmati, Grain
-Black Bean - Dry, Bean - Dry
-Northern Beans - Dry, Bean - Dry
-Mixed Beans - Dry, Bean - Dry
-Black Bean - Canned, Bean - Canned
-Garbanzos - Chick Pea Canned, Bean - Canned
-Garbanzos - Chick Pea Dry, Bean - Dry
-Cannellini Bean - Canned, Bean - Canned
-Peppers - Bell, Vegtable - Fresh
-Onion, Vegtable - Fresh
-Garlic - Clove, Vegtable - Fresh
-Garlic - Minced, Vegtable - Fresh
-Red Pepper Flakes, Spice
-Lemon, Fruit
-Wine - White, Condiments
-Broth - Chicken, Soup
-Broth - Beef, Soup
-Broth - Vegetable, Soup
+Chicken - Breast, Meat-Poultry, Meat
+Chicken - Thigh, Meat-Poultry, Meat
+Chicken - Whole, Meat-Poultry, Meat
+Chicken - Half, Meat-Poultry, Meat
+Chicken - Tenderloin, Meat-Poultry, Meat
+Beef - Ground, Meat-Beef, Meat
+Beef - Flank Steak, Meat-Beef, Meat
+Beef - Strip Steak, Meat-Beef, Meat
+Beef - Roast, Meat-Beef, Meat
+Beef - Tenderloin, Meat-Beef, Meat
+Beef - Filet, Meat-Beef, Meat
+Beef - NY Strip Steak, Meat-Beef, Meat
+Pasta - Rigatoni, Pasta, 2
+Pasta - Elbow, Pasta, 2
+Pasta - Farfalle, Pasta, 2
+Pasta - Penne, Pasta, 2
+Pasta - Bowtie, Pasta, 2
+Pasta - Other, Pasta, 2
+Pork - Chops, Meat-Pork, Meat
+Pork - Tenderloin, Meat-Pork, Meat
+Pork - Other, Meat-Pork, Meat
+Peanut Butter, Spreads, 1
+Nuttella, Spreads, 1
+Popcorn - Kernal, Snack, 8
+Popcorn - Bag, Snack, 8
+Cooking Spray, Oils, 1
+Sesame Oil, Oils, 1
+Olive Oil, Oils, 1
+Vegetable Oil, Oils, 1
+Canola Oil, Oils, 1
+Oil -Other, Oils, 1
+Vinegar - Rice, Condiments, 1
+Vinegar - White, Condiments, 1
+Vinegar - Balsamic, Condiments, 1
+Vinegar - Red Wine, Condiments, 1
+Vinegar - Other, Condiments, 1
+Old Bay, Spice, 5
+Salt - Table, Spice, 5
+Salt - Kosher, Spice, 5
+Pepper - Fine, Spice, 5
+Pepper - Whole Corn, Spice, 5
+Pepper - Corse, Spice, 5
+Flour, Baking, 5
+Bisquick, Baking, 5
+Baking Powder, Baking, 5
+Confectioners Sugar, Baking, 5
+Sugar, Baking, 5
+Corn Starch, Baking, 5
+Corn Meal, Baking, 5
+Cheese - Shredded Chedder, Dairy, Dairy
+Cheese - Pepper Jack, Dairy, Dairy
+Cheese - Shredded Colby Jack, Dairy, Dairy
+Cheese - Sliced American, Dairy, Dairy
+Cheese - Mozzerlla Stick, Dairy, Dairy
+Cheese - Mozzerlla Fresh, Dairy, Dairy
+Cheese - Mozzerlla Shredded, Dairy, Dairy
+Cheese - Velveeta, Dairy, Dairy
+Summer Squash, Vegetable - Fresh, Produce
+Cucumber, Vegetable - Fresh, Produce
+Zucchini, Vegetable - Fresh, Produce
+Tomato - Roma, Vegetable - Fresh, Produce
+Tomato - Cherry, Vegetable - Fresh, Produce
+Tomato - Vine, Vegetable - Fresh, Produce
+Corn, Vegetable - Fresh, Produce
+Corn, Vegetable - Canned, 2
+Corn - Creamed, Vegetable - Canned, 2
+BBQ - Sweet Baby Ray's, Condiments, 1
+BBQ - Sticky Fingers, Condiments, 1
+Mustard - Stone Ground, Condiments, 1
+Mustard - Yellow, Condiments, 1
+Mustard - Dijon, Condiments, 1
+Maple Syrup, Toppings, 4
+Hot Fudge, Toppings, 4
+Pancake Syrup, Toppings, 4
+Honey, Condiments, 4
+White Chedder Powder, Condiments, 1
+Olive - Spanish, Condiments, 1
+Canned Red Peppers, Condiments, 1
+Canned Roasted Peppers, Condiments, 1
+Olive - Kalamata, Condiments, 1
+Oyster Sauce, Condiments, 1
+Pickle Spears, Condiments, 1
+Pickle Chips, Condiments, 1
+Mayonnaise, Condiments, 1
+Salsa - Verde, Condiments, 1
+Salse - Regular, Condiments, 1
+Salsa - Fresh, Condiments, 1
+Italian Vinaigrette, Condiments, 1
+Grits, Grain, 2
+Oats, Grain, 2
+Orzo, Pasta, 2
+Rice - Minute, Grain, 2
+Rice - Long Grain, Grain, 2
+Rice - Basmati, Grain, 2
+Black Bean - Dry, Bean - Dry, 2
+Northern Beans - Dry, Bean - Dry, 2
+Mixed Beans - Dry, Bean - Dry, 2
+Black Bean - Canned, Bean - Canned, 2
+Garbanzos - Chick Pea Canned, Bean - Canned, 2
+Garbanzos - Chick Pea Dry, Bean - Dry, 2
+Cannellini Bean - Canned, Bean - Canned, 2
+Peppers - Bell, Vegetable - Fresh, Produce
+Onion, Vegetable - Fresh, Produce
+Garlic - Clove, Vegetable - Fresh, Produce
+Garlic - Minced, Vegetable - Fresh, Produce
+Red Pepper Flakes, Spice, 5
+Lemon, Fruit, Produce
+Wine - White, Condiments, 4
+Broth - Chicken, Soup, 4
+Broth - Beef, Soup, 4
+Broth - Vegetable, Soup, 4
 default, default

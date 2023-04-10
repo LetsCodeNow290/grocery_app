@@ -70,64 +70,6 @@ class DetailFood(DetailView):
     template_name_suffix = '_detail'
 
 
-class AddUnit(CreateView):
-    model = MeasuringUnit
-    form_class = MeasuringUnitForm
-    success_url = '/home_admin'
-
-
-
-    def get_context_data(self, **kwargs):
-        kwargs['object_list'] = MeasuringUnit.objects.order_by(
-            'unit_name')
-        return super().get_context_data(**kwargs)
-
-
-class DeleteUnit(DeleteView):
-    model = MeasuringUnit
-    template_name_suffix = '_delete'
-
-    def get_success_url(self, **kwargs):
-        if self.request.GET.get('next'):
-            return f"/unit/list?page={self.request.GET.get('next', 1)}"
-        else:
-            return '/unit/list'
-
-    def get_context_data(self, **kwargs):
-        kwargs['last_page'] = self.request.GET.get('next', 1)
-        return super().get_context_data(**kwargs)
-
-
-
-class UpdateUnit(UpdateView):
-    model = MeasuringUnit
-    fields = ['unit_name']
-    template_name_suffix = '_update'
-
-    def get_success_url(self, **kwargs):
-        if self.request.GET.get('next'):
-            return f"/unit/list?page={self.request.GET.get('next', 1)}"
-        else:
-            return '/unit/list'
-
-    def get_context_data(self, **kwargs):
-        kwargs['last_page'] = self.request.GET.get('next', 1)
-        return super().get_context_data(**kwargs)
-
-
-
-class ListUnit(ListView):
-    model = MeasuringUnit
-    template_name_suffix = '_list'
-    paginate_by = 5
-    ordering = ['unit_name']
-
-    def get_context_data(self, **kwargs):
-        kwargs['current_page'] = self.request.GET.get('page', 1)
-        kwargs['object_all'] = MeasuringUnit.objects.order_by("unit_name")
-        return super().get_context_data(**kwargs)
-
-
 class AddRecipeCategory(CreateView):
     model = RecipeCategory
     form_class = RecipeCategoryForm

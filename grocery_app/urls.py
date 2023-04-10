@@ -50,10 +50,6 @@ urlpatterns = [
     path('recipe_cat/<int:pk>/update',
          UpdateRecipeCategory.as_view(), name='recipe_cat_update'),
     path('recipe_cat/list', ListRecipeCategory.as_view(), name='recipe_cat_list'),
-    path('unit/', AddUnit.as_view(), name='unit'),
-    path('unit/<int:pk>/delete', DeleteUnit.as_view(), name='unit_delete'),
-    path('unit/<int:pk>/update', UpdateUnit.as_view(), name='unit_update'),
-    path('unit/list', ListUnit.as_view(), name='unit_list'),
     path('home_admin/', admin_view, name='home_admin'),
     path('recipe/', start_recipe, name='start_recipe'),
     path('recipe/<int:pk>/add_ingredient',
@@ -75,6 +71,8 @@ urlpatterns = [
     path('recipe_update/', RecipeUpdate.as_view(), name='recipe_update'),
     path('grocery_detail_and_remove/<int:pk>',
          grocery_detail_and_remove, name='grocery_detail_and_remove'),
+     # path('grocery_update_and_remove/<int:pk>',
+     #     grocery_list_update_remove, name='grocery_update_and_remove'),
 
 ]
 

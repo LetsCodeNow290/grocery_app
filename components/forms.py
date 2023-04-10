@@ -15,18 +15,6 @@ class FoodForm(forms.ModelForm):
         return cleaned_data
     
 
-class MeasuringUnitForm(forms.ModelForm):
-    class Meta:
-        model = MeasuringUnit
-        fields = "__all__"
-
-    def clean(self):
-        cleaned_data = super().clean()
-        unit_name_field = str(cleaned_data.get('unit_name')).title()
-        if MeasuringUnit.objects.filter(unit_name=unit_name_field).exists():
-            raise forms.ValidationError("This entry already exists in the database")
-        return cleaned_data
-    
 
 class RecipeCategoryForm(forms.ModelForm):
     class Meta:

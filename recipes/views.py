@@ -36,9 +36,16 @@ def add_ingredient(request, pk):
                         messages.error(
                             request, f'{str(obj)} is already in the recipe')
                         return redirect(f'/recipe/{pk}/add_ingredient')
-                form.save()
+                quant_int = float(form.cleaned_data['whole_number_quantitiy'])
+                quant_frac = float(form.cleaned_data['fraction_quantity'])
+                quantity = quant_int + quant_frac
+                obj = Ingredient()
+                obj.ingredient_name = form.cleaned_data['ingredient_name']
+                obj.ingredient_quantity = quantity
+                obj.quantity_unit = form.cleaned_data['quantity_unit']
+                obj.save()
                 Recipe.objects.get(pk=pk).ingredients.add(
-                Ingredient.objects.get(pk=form.save().pk))
+                Ingredient.objects.get(pk=obj.pk))
             if add_food.is_valid():
                 add_food.save(commit=False)
                 food_name_field = str(add_food.cleaned_data.get('food_name')).title()

@@ -8,7 +8,14 @@
         {% csrf_token %}
         <fieldset class='form-group'>
             <legend class="border-bottom mb-4">Add ingredients to the recipe <strong>{{ data }}</strong></legend>
-            {{ form|crispy }}
+            {{ form.ingredient_name|as_crispy_field }}
+            <div class="form-row">
+                {{ form.whole_number_quantitiy|as_crispy_field}} 
+            {{ form.fraction_quantity|as_crispy_field }}
+            </div>
+            
+            {{ form.quantity_unit|as_crispy_field }}
+            
         </fieldset>
         <div class="form-group">
             <button class='btn btn-outline-info' type='submit'>Submit</button>

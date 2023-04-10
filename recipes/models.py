@@ -42,13 +42,24 @@ class Recipe(models.Model):
             img.save(self.recipe_image.path)
         super().save(*args, **kwargs)
 
+UNITS = [
+    ('teaspoon(s)', 'teaspoon(s)'),
+    ('TABLESPOON(s)','TABLESPOON(s)'),
+    ('cup(s)', 'cup(s)'),
+    ('pint(s)', 'pint(s)'),
+    ('quart(s)', 'quart(s)'),
+    ('gallon(s)', 'gallon(s)'),
+    ('ounce(s)', 'ounce(s)'),
+    ('pound(s)', 'pound(s)'),
+    ('vegetable or fruit', 'vegetable or fruit'),
+    ('other', 'other'),
+]
 
 class Ingredient(models.Model):
     ingredient_name = models.ForeignKey(
         'components.Food', on_delete=models.CASCADE, related_name='ingredient_name')
     ingredient_quantity = models.FloatField()
-    quantity_unit = models.ForeignKey(
-        'components.MeasuringUnit', on_delete=models.CASCADE, related_name='quantity_unit')
+    quantity_unit = models.CharField(max_length=20, choices=UNITS)
 
     def __str__(self):
         return self.ingredient_name.food_name

@@ -4,7 +4,7 @@ Components
 Groceries
 
 Recipe:
-    - Add a "add food" option in the recipe creation template and redirect back to that page
+    - Remove ingredients from recipes in the Update view
     - Test recipe validation
 
 Enhancements:
@@ -16,3 +16,5 @@ Enhancements:
     
 Future Research:
 	- I need to figure our how to manage the database. Dumpdata and Loaddata options are not as straightforward as they seem.
+
+Use the django-environ module to set environmental variables

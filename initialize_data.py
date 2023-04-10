@@ -26,12 +26,7 @@ try:
                 continue
             else:
                 RecipeCategory(recipe_category_name=line).save()
-    with open(f'{base}/units.txt', 'r') as af:
-        for line in af:
-            if MeasuringUnit.objects.filter(unit_name=line):
-                continue
-            else:
-                MeasuringUnit(unit_name=line).save()
+
     with open(f'{base}/recipe_book.txt', 'r') as af:
         for line in af:
             if RecipeBook.objects.filter(book_name=line):
@@ -70,12 +65,7 @@ except:
                 continue
             else:
                 RecipeCategory(recipe_category_name=line).save()
-    with open(f'{base}\\units.txt', 'r') as af:
-        for line in af:
-            if MeasuringUnit.objects.filter(unit_name=line):
-                continue
-            else:
-                MeasuringUnit(unit_name=line).save()
+
     with open(f'{base}\\recipe_book.txt', 'r') as af:
         for line in af:
             if RecipeBook.objects.filter(book_name=line):
