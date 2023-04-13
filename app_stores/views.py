@@ -1,3 +1,3 @@
 from django.shortcuts import render
 
-# Create your views here.
+# Must ceate a view that creates a store, a view to add the store to session data, and a view to make food/aisle relationships in stroes.
