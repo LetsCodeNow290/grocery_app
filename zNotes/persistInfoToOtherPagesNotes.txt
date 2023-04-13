@@ -1,0 +1,49 @@
+There are a few ways to save information from a form and use it in later pages. You can save put info in the URL, save to session data, use cookies, and maybe more. So far, I can demonstrate saving session data and URL manipulation
+Session data is great because lots of things can be saved in the session data. Its a robust tool but it can get complicated and sometimes it doesn't get cleared properly and creates issues
+Saving info to the URL is simple and easy but lacks the robust features of session data. Also, if the user manipulates the URL, they can mess everything up. The same is true for session data but it's far less likely.
+
+URL info:
+
+    getting pk into the URL from a function view:
+        start in the view. See groceries/choose_list view
+        Next, go to the html file and define the pk in the anchor tag that points to a specific object. see groceries/choose_list.html
+        Lastly, go to urls.py and add /<int:pk>/ in the url path to the object
+
+    getting pk into the URL from a class based view (much eaiser):
+        no need to do anything in the view
+        Start in the html file and define the pk in the anchor tag that points to a specific object. See components/aisle_list.html
+        Lastly, go to urls.py and add /<int:pk>/ in the url path to the object
+
+Session Info:
+
+    This info is just part of the metadata that comes from an HttpRequest objects in django. To call session info simply use "request.session["dict key goes here"]. This is assuming the first argument in the function was "request"
+    Practically, this is how it should look:
+
+    def save_session_view(request):
+        if request.method == "POST"
+            save_session_form = SaveSessionForm(request.POST or None)
+            if save_session_form.is_valid():
+                grocery_store = save_session_form.cleaned_data.get("store_name")
+                request.session["store_name"] = grocery_store
+                return "a_view"
+        else:
+            save_session_form = SaveSessionForm()
+        return render(stuff)
+
+    In the method above, session data is saved in a new dict entry called "store_name". Notice I didn't save the form. If all that is needed is session data, there isn't any reason to save the form data in the database. If you'd like to save an entire object, the "model_to_dict" method can save all that data in a new dict. 
+
+    To access the data:
+
+    def use_data_view(request):
+        if request.method == "POST"
+            use_data_form = UseDataForm(request.POST or None)
+            if use_data_form.is_valid():
+                instance = use_data_form.save(Commit=False)
+                instance.store_name = request.session["store_name"]
+                instance.save()
+                return "a_view"
+        else:
+            use_data_form = UseDataForm()
+        return render(stuff)
+    
+    In the method above, session data was used to fill fields in another form. I don't know exactly when session data is erased but the it will persist until it is deleted or a new session is started. 

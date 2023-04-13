@@ -23,8 +23,6 @@ GroceryList attributes:(in groceries app)
     - list_recipes: inherit from Recipe with m2m
         - make_list model function to make the grocery list
 
-MeasuringUnit attributes:(in component app)
-    - unit_name
 
 Food attributes:(in component app)
     - food_name

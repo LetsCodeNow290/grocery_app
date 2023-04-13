@@ -4,7 +4,7 @@ import django
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "grocery_app.settings")
 django.setup()
-from components.models import *
+from app_components.models import *
 
 def populate_foods():
     with open('InitialData\\food.txt', 'r') as file:

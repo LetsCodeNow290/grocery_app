@@ -1,20 +1,22 @@
 Components
     - Add a search feature for all the categories
 
-Groceries
+Groceries:
+    - Create a remove by recipe feature
+    - Re-do the print_list feature so that it is easier to read on paper. Maybe use xlsx writer or find a way to format a text document
 
 Recipe:
     - Remove ingredients from recipes in the Update view
     - Test recipe validation
 
 Enhancements:
-    - Investigate custom validation in the model. I tried to add custom validation and I cannot update an existing object. I need to de-dup recipe and food
+    - Create a feature that scans previous grocery lists and offers those items up to pre-populate a new list
+    - add Grocery Store object so I can add foods for several different grocery stores
+        > For this to work, I will have to remove the "aisle" attribute from Food and add it to a new model within the grocery store models.py.
+        > I think it'll look a lot like a GroceryList in that a grocery store will contain 2 models. One will be a food container that defines a food and marries it to an aisle. The otehr will be a grocery store that contains that new food container and also the attributes of a grocery store.
     - Figure out how to redirect to last page on all paginated templates
     - Redirect to last page when adding food from the recipe creation template
     - scrape web for deals and coupons for Groceries
-    - add Grocery Store object so I can add foods for several different grocery stores
     
 Future Research:
 	- I need to figure our how to manage the database. Dumpdata and Loaddata options are not as straightforward as they seem.
-
-Use the django-environ module to set environmental variables

@@ -17,10 +17,10 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from components.views import *
-from home.views import *
-from recipes.views import *
-from groceries.views import *
+from app_components.views import *
+from app_home.views import *
+from app_recipes.views import *
+from app_groceries.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
