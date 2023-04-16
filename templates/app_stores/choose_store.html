@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class='content-section'>
+    <form method="POST"> 
+        {% csrf_token %}
+        <fieldset class='form-group'>
+            <legend class="border-bottom mb-4">Choose a Grocery Store</legend>
+            {{ form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class='btn btn-outline-info' type='submit'>Submit</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+{% block content2 %}
+<div>
+    <h3>Site Options</h3>
+    <div><br><a class="btn btn-secondary" href="{% url 'home' %}">Go Home</a><br>
+        <br> <a class="btn btn-secondary" href="{% url 'choose_list' %}">Choose A Grocery List</a><br>
+    </div>
+
+</div>
+{% endblock %}

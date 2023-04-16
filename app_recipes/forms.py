@@ -42,5 +42,4 @@ class RecipeFilter(django_filters.FilterSet):
     ingredients = django_filters.ModelChoiceFilter(queryset=Food.objects.all(), empty_label="All")
 
 class RecipeToList(forms.Form):
-    choose_a_list = forms.ModelChoiceField(
-        GroceryList.objects.all().order_by('-id'), empty_label=None)
+    choose_a_list = forms.ModelChoiceField(GroceryList.objects.all().order_by('-id'), empty_label=None)

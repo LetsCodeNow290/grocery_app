@@ -14,7 +14,7 @@ def start_recipe(request):
         if form.is_valid():
             form.save(commit=False)
             for obj in Recipe.objects.all():
-                if str(obj)  == str(form.cleaned_data.get('recipe_name')).title():
+                if str(obj) == str(form.cleaned_data.get('recipe_name')).title():
                     messages.error(request, f"{str(form.cleaned_data.get('recipe_name'))} is already in the database")
                     return redirect(request.path)
             form.save()
@@ -44,8 +44,7 @@ def add_ingredient(request, pk):
                 obj.ingredient_quantity = quantity
                 obj.quantity_unit = form.cleaned_data['quantity_unit']
                 obj.save()
-                Recipe.objects.get(pk=pk).ingredients.add(
-                Ingredient.objects.get(pk=obj.pk))
+                Recipe.objects.get(pk=pk).ingredients.add(Ingredient.objects.get(pk=obj.pk))
             if add_food.is_valid():
                 add_food.save(commit=False)
                 food_name_field = str(add_food.cleaned_data.get('food_name')).title()

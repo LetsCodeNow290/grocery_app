@@ -13,8 +13,11 @@ class FoodAisle(models.Model):
         related_name='food_aisle', 
         blank=True, 
         null=True, 
-        default=Aisle.get_default_pk
+        default=None
         )
+    
+    def __str__(self) -> str:
+        return f"{self.food_name_for_store} in aisle {self.aisle_in_store}"
 
 
 
@@ -27,7 +30,12 @@ class GroceryStore(models.Model):
         blank=True
         )
 
+    def __str__(self) -> str:
+        return f"{self.store_name} at {self.store_address}"
+    
 # Complete this function to return and aisle with a corresponding food name
     def return_aisle(self, food_name):
-        if food_name in self.food_aisle_relationship.all():
-            return
+        if self.food_aisle_relationship.filter(food_name_for_store=food_name).exists():
+            return self.food_aisle_relationship.get(food_name_for_store=food_name).aisle_in_store.aisle_name
+        else:
+            return ""

@@ -38,10 +38,6 @@ class Aisle(models.Model):
     def __str__(self):
         return self.aisle_name
 
-    @classmethod
-    def get_default_pk(cls):
-        aisle, created = cls.objects.get_or_create(aisle_name="Default aisle")
-        return aisle.pk
 
 
 class RecipeBook(models.Model):
@@ -70,7 +66,6 @@ class RecipeBook(models.Model):
 class Food(models.Model):
     food_name = models.CharField(max_length=100)
     food_category = models.ForeignKey('FoodCategory', on_delete=models.CASCADE, related_name='food_category')
-    #food_aisle = models.ForeignKey('Aisle', on_delete=models.CASCADE, related_name='food_aisle', blank=True, null=True, default=Aisle.get_default_pk)
 
     def save(self, *args, **kwargs):
         self.food_name = self.food_name.title()

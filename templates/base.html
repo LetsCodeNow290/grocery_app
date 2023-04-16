@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -21,8 +23,8 @@
 <body>
     <header class="site-header">
         <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
-            <h1 style="color:#ffffff; text-align: center"><a style="color: white;" href="{% url 'home' %}">Grocery
-                    Builder App</a></h1>
+            <div class="left"><h1 style="color:#ffffff"><a style="color: white;" href="{% url 'home' %}">Grocery Builder App </a></h1>
+            
         </nav>
         <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
             integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
@@ -42,6 +44,13 @@
         {% endif %}
     </div>
     
+    {% if 'store_name' in request.session %}
+    <div style="justify-content: right;"><a href="{% url 'choose_store' %}"><h3>Current Grocery Store: <mark style="background-color: rgb(222, 239, 31);">{{request.session.store_name}} at {{request.session.store_address}}</mark></h3></a></div>
+    {% else %}
+    <div style="justify-content: right;"><a href="{% url 'choose_store' %}"><h3>Choose Grocery Store </h3></a></div>
+    {% endif %}
+    <br><br>
+
 
     <div style="display: flex; justify-content: space-around">
 

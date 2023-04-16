@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             name='FoodAisle',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('aisle_in_store', models.ForeignKey(blank=True, default=app_components.models.Aisle.get_default_pk, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='food_aisle', to='app_components.Aisle')),
+                ('aisle_in_store', models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='food_aisle', to='app_components.Aisle')),
                 ('food_name_for_store', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='food_name_for_store', to='app_components.Food')),
             ],
         ),
