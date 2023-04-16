@@ -35,7 +35,9 @@ class GroceryStore(models.Model):
     
 # Complete this function to return and aisle with a corresponding food name
     def return_aisle(self, food_name):
-        if self.food_aisle_relationship.filter(food_name_for_store=food_name).exists():
-            return self.food_aisle_relationship.get(food_name_for_store=food_name).aisle_in_store.aisle_name
+        food_item = Food.objects.filter(food_name=food_name).first()
+        if self.food_aisle_relationship.filter(food_name_for_store=food_item).exists():
+            #food = self.food_aisle_relationship.filter(food_name_for_store=food_name).pk
+            return self.food_aisle_relationship.get(food_name_for_store=food_item).aisle_in_store.aisle_name
         else:
             return ""

@@ -47,7 +47,7 @@
     {% if 'store_name' in request.session %}
     <div style="justify-content: right;"><a href="{% url 'choose_store' %}"><h3>Current Grocery Store: <mark style="background-color: rgb(222, 239, 31);">{{request.session.store_name}} at {{request.session.store_address}}</mark></h3></a></div>
     {% else %}
-    <div style="justify-content: right;"><a href="{% url 'choose_store' %}"><h3>Choose Grocery Store </h3></a></div>
+    <div style="justify-content: right;"><a href="{% url 'choose_store' %}"><h3>Click Here to Choose Grocery Store </h3></a></div>
     {% endif %}
     <br><br>
 

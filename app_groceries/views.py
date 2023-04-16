@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRe
 from .models import *
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .forms import *
+from app_stores.forms import SessionStoreForm
+from app_stores.models import GroceryStore
 from django.forms.models import model_to_dict
 from django.contrib import messages
 from django.http import HttpResponse
@@ -9,6 +11,19 @@ import csv
 
 # this method name is misleading, it also allows the user to make a new list
 def choose_list(request):
+    if 'store_pk' not in request.session:
+        messages.warning(request, "Please choose a store before starting or changing a grocery list")
+        if request.method == "POST":
+            form = SessionStoreForm(request.POST or None)
+            if form.is_valid():
+                form_store_name = form.cleaned_data.get("choose_a_list")
+                request.session["store_pk"] = form_store_name.id
+                request.session["store_name"] = form_store_name.store_name
+                request.session["store_address"] = form_store_name.store_address
+                return HttpResponseRedirect(request.path_info)
+        else:
+            form = SessionStoreForm()
+        return render(request, "app_stores/choose_store.html", {"form": form})
     if request.method == 'POST':
         form_new_list = NewGroceryListForm(request.POST or None)
         if form_new_list.is_valid:
@@ -27,6 +42,9 @@ def choose_list(request):
 
 
 def add_to_list_main(request, pk):
+    grocery_list = GroceryList.objects.get(pk=pk)
+    grocery_list.list_store = GroceryStore.objects.get(pk=request.session["store_pk"])
+    grocery_list.save(update_fields=["list_store"])
     if request.method == 'POST':
         list_obj = get_object_or_404(GroceryList, pk=pk)
         form_recipe = GroceryListForm(request.POST or None, instance=list_obj)
@@ -58,11 +76,9 @@ def add_to_list_main(request, pk):
     else:
         # This try statement makes the ingredient list
      
-        try:
-            ingredients = GroceryList.make_list(
-                GroceryList.objects.get(pk=pk))
-        except Exception as e:
-            ingredients = None
+        
+        ingredients = GroceryList.make_list(GroceryList.objects.get(pk=pk))
+        
         # This try is used only for the list object name
         try:
             list_name = GroceryList.objects.get(pk=pk)
@@ -79,6 +95,7 @@ def add_to_list_main(request, pk):
             item_list = None
         recipe_form = GroceryListForm()
         item_form = ChooseItemForm()
+        
     return render(request, 'app_groceries/add_to_list.html', {'recipe_list': recipe_list, 'recipe_form': recipe_form,'item_list': item_list ,'item_form': item_form, 'ingredients': ingredients, 'list_name': list_name})
 
 
