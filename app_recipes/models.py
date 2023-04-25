@@ -13,17 +13,13 @@ RECIPE_RATING = (
 
 class Recipe(models.Model):
     recipe_name = models.CharField(max_length=100)
-    recipe_category = models.ForeignKey(
-        'app_components.RecipeCategory', on_delete=models.CASCADE, related_name='recipe_category')
-    recipe_image = models.ImageField(
-        blank=True, null=True, default="default.jpg", upload_to="recipe_pics/")
+    recipe_category = models.ForeignKey('app_components.RecipeCategory', on_delete=models.CASCADE, related_name='recipe_category')
+    recipe_image = models.ImageField(blank=True, null=True, default="default.jpg", upload_to="recipe_pics/")
     recipe_instructions = models.TextField(blank=True, null=True)
-    recipe_location = models.ForeignKey(
-        'app_components.RecipeBook', on_delete=models.CASCADE, related_name='recipe_location', blank=True, null=True)
+    recipe_location = models.ForeignKey('app_components.RecipeBook', on_delete=models.CASCADE, related_name='recipe_location', blank=True, null=True)
     location_page_number = models.IntegerField(blank=True, null=True)
     ingredients = models.ManyToManyField('Ingredient', blank=True)
-    recipe_rating = models.CharField(blank=True, null=True,
-                                     default='good', choices=RECIPE_RATING, max_length=50)
+    recipe_rating = models.CharField(blank=True, null=True,default='good', choices=RECIPE_RATING, max_length=50)
     comments = models.TextField(blank=True, null=True)
 
     def __str__(self):

@@ -83,7 +83,7 @@ Pickle Spears, Condiments, 1
 Pickle Chips, Condiments, 1
 Mayonnaise, Condiments, 1
 Salsa - Verde, Condiments, 1
-Salse - Regular, Condiments, 1
+Salsa - Regular, Condiments, 1
 Salsa - Fresh, Condiments, 1
 Italian Vinaigrette, Condiments, 1
 Grits, Grain, 2

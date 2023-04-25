@@ -25,7 +25,7 @@
                 </p>
                 <p class="article-content">
                 <h4>Ingredients:</h4> {% for ingred in recipe.ingredients.all %}
-                <li>{{ ingred }}</li>
+                <li>{{ ingred }} x {{ ingred.ingredient_quantity }} {{ ingred.quantity_unit }}</li>
                 {% endfor %}
                 </p>
 

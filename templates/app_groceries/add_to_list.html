@@ -37,7 +37,7 @@
 <h1>{{ list_name }}</h1>
 <h3>Recipes</h3>
 {% for recipe in recipe_list %}
-<li>{{ recipe }}</li>
+<li>{{ recipe.recipe_from_list }} x {{ recipe.recipe_quantity }}</li>
 {% endfor %}
 
 <br>

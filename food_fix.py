@@ -5,37 +5,9 @@ import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "grocery_app.settings")
 django.setup()
 from app_components.models import *
-
-def populate_foods():
-    with open('InitialData\\food.txt', 'r') as file:
-        for line in file:
-            if line != "":
-                line = line.split(',')
-                try:
-                    line[2] = line[2].lstrip()
-                    line[2] = line[2].strip('\n')
-                    food_filter = Food.objects.filter(food_name=line[0])
-                    aisle_filter = Aisle.objects.filter(aisle_name=line[2])
-                    if food_filter and aisle_filter:
-                        food = Food.objects.get(food_name=line[0])
-                        aisle = Aisle.objects.get(aisle_name=line[2])
-                        food.aisle = aisle
-                        food.save
-
-                    else:
-                        line[1] = line[1].lstrip()
-                        try:
-                            food_cat = FoodCategory.objects.get(food_category_name=line[1])
-                            aisle_cat = Aisle.objects.get(aisle_name=line[2])
-                        
-                            Food.objects.create(food_name=line[0], food_category=food_cat, food_aisle=aisle_cat) 
-                        except Exception as e:
-                            print(e)
-                            print(line)
-                except IndexError as e:
-                    # print(e)
-                    # print(line)
-                    continue
+from app_stores.models import GroceryStore
+from app_recipes.models import *
+import random
 
 def remove_dups():
     obj_list = [food.food_name for food in Food.objects.all()]
@@ -45,8 +17,27 @@ def remove_dups():
     for food in final_list:
         Food.objects.get(pk=food.pk).delete()
 
+recipe_names = ['Chicken Stuff', "Beef Stuff", "Pork Stuff", "Pasta Stuff"]
+for name in recipe_names:
+    if Recipe.objects.filter(recipe_name=name):
+        Recipe.objects.filter(recipe_name=name).delete()
+    else:
+        continue
 
-
-
-
-remove_dups()
+new_recipe_pk = []
+for index in range(len(recipe_names)):
+    main_ingred = recipe_names[index].split(" ")[0]
+    recipe = Recipe(recipe_name=recipe_names[index], recipe_category=RecipeCategory.objects.order_by("?").first())
+    recipe.save()
+    recipe_obj = Recipe.objects.get(pk=recipe.pk)
+    for item in range(random.randint(3,9)):
+        unit = 'other'
+        if item == 0:
+            main = Food.objects.filter(food_name__icontains=main_ingred).order_by("?").first()
+            ingred = Ingredient(ingredient_name=main, ingredient_quantity=random.randint(1,7), quantity_unit=unit)
+            ingred.save()
+            recipe_obj.ingredients.add(ingred.pk)
+        else:
+            ingred = Ingredient(ingredient_name=Food.objects.order_by("?").first(), ingredient_quantity=random.randint(1,7), quantity_unit=unit)
+            ingred.save()
+            recipe_obj.ingredients.add(ingred.pk)

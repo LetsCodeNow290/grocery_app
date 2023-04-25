@@ -32,7 +32,7 @@ class ChooseItem(models.Model):
 class GroceryList(models.Model):
     list_name = models.DateField()
     list_items = models.ManyToManyField(ChooseItem, related_name='items_list', blank=True)
-    list_recipes = models.ManyToManyField(Recipe, related_name='recipe_list', blank=True)
+    list_recipes = models.ManyToManyField(Recipe, through='GroceryListRecipe',related_name='recipe_list', blank=True)
     list_store = models.ForeignKey(GroceryStore, on_delete=models.CASCADE, related_name="list_store", null=True , blank=True)
 
     def __str__(self):
@@ -66,3 +66,12 @@ class GroceryList(models.Model):
         return final_list
     
 
+'''This model will act a reference to store all the recipes for a given GroceryList
+The "through=GroceryListRecipe" line to the list_recipes field in GroceryList is what makes this work'''
+class GroceryListRecipe(models.Model):
+    grocery_list = models.ForeignKey(GroceryList, on_delete=models.CASCADE)
+    recipe_from_list = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    recipe_quantity = models.PositiveIntegerField(default=1) # additional field to store quantity
+
+    def __str__(self):
+        return self.recipe_from_list.recipe_name

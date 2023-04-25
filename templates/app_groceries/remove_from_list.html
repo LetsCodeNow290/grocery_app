@@ -46,17 +46,23 @@
     <thead>
       <tr>
         <th>Recipe Name</th>
-        <th>Delete</th>
+          <th>Quantity</th>
+          <th>Delete</th>
+          <th>Update Quantity</th>
       </tr>
     </thead>
     <tbody>
       {{ recipe_form.management_form }}
-      {% for field in recipe_form %}
+      {% for field in recipe_form %}{% for recipe in recipes_in_list %}
+      {% if forloop.counter == forloop.parentloop.counter %}
         <tr>
-          <td> {{ field|crispy }} </td>
-          <td><input type="checkbox" name="delete" value="{{ item.pk }}"></td>
+          <td>{{ recipe.recipe_from_list }}</td>
+            <td>{{ recipe.recipe_quantity }}</td>
+            <td><input type="checkbox" name="delete" value="{{ recipe.pk }}"></td>
+            <td> {{ field|crispy }} </td>
         </tr>
-{% endfor %}
+        {% endif %}
+{% endfor %}{% endfor %}
       
     </tbody>
   </table>

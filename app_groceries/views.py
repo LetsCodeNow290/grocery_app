@@ -54,13 +54,11 @@ def add_to_list_main(request, pk):
             if form_recipe.is_valid():
                 form_recipe.save()
                 # Adding and updating ingredients happens in the save method of the GroceryListForm
-                messages.success(request, f'The recipe {form_recipe.cleaned_data.get("list_recipes")} has been added to the {GroceryList.objects.get(pk=pk).list_name}')
+                messages.success(request, f'The recipe {form_recipe.cleaned_data.get("list_recipes").recipe_name} has been added to the {GroceryList.objects.get(pk=pk).list_name}')
             if form_item.is_valid():
                 form_item.save()
                 # The rest of this statement updates the "list_items" field if it already exists
                 item_obj = ChooseItem.objects.get(pk=form_item.save().pk)
-                
-                print(f"ChooseItem objects {ChooseItem.objects.all()}")
                 created = True
                 for item in list_obj.list_items.all():
                     if item.item_name == item_obj.item_name and item.item_quantity_unit == item_obj.item_quantity_unit:
@@ -70,7 +68,6 @@ def add_to_list_main(request, pk):
                         created = False
                 if created == True:
                     list_obj.list_items.add(ChooseItem.objects.get(pk=form_item.save().pk))
-                print(f"GroceryList objects {list_obj.list_items.all()}")
                 messages.success(request, f'{form_item.save().item_name.food_name} was added to the List')
             return HttpResponseRedirect(request.path_info)
     else:
@@ -86,7 +83,7 @@ def add_to_list_main(request, pk):
             list_name = None
         # This try statement makes a list of the chosen recipes
         try:
-            recipe_list = GroceryList.objects.get(pk=pk).list_recipes.all()
+            recipe_list = GroceryListRecipe.objects.filter(grocery_list=grocery_list)
         except:
             recipe_list = None
         try:
@@ -138,27 +135,96 @@ GroceryListRemoveFormset = forms.modelformset_factory(
     extra = 0
 )
 
+# GroceryListRemoveByRecipeFormset = forms.modelformset_factory(
+#     GroceryList,
+#     form = RemoveItemByRecipe,
+#     fields=['list_recipes'],
+#     extra=0
+#     )
+
 GroceryListRemoveByRecipeFormset = forms.modelformset_factory(
-    GroceryList,
+    GroceryListRecipe,
     form = RemoveItemByRecipe,
-    fields = ['list_recipes',],
-    extra = 0
-)
+    fields=['recipe_quantity'],
+    extra=0
+    )
 
 def grocery_detail_and_remove(request, pk):
     '''This view removes items from a grocery list'''
     grocery_list = get_object_or_404(GroceryList, pk=pk)
     if request.method == "POST":
         individual_form = GroceryListRemoveFormset(request.POST, queryset=ChooseItem.objects.filter(items_list=grocery_list))
-        # This next part creates a list of item that are marked for deletion
-        checked_items = request.POST.getlist("delete")
-        if individual_form.is_valid():
-            individual_form.save()
-            # This next part iterates through the deletion list and deletes the m2m relationship and then deletes the ChooseItem object
-            for check in checked_items:
-                grocery_list.list_items.remove(ChooseItem.objects.get(pk=check))
-                ChooseItem.objects.filter(pk=check).delete()
-        return HttpResponseRedirect(request.path_info)
+        recipe_form = GroceryListRemoveByRecipeFormset(request.POST, queryset=GroceryListRecipe.objects.filter(grocery_list=grocery_list))
+        if individual_form.is_valid() or recipe_form.is_valid():
+            if individual_form.is_valid():
+                # This next part creates a list of item that are marked for deletion
+                checked_items = request.POST.getlist("delete")
+                individual_form.save()
+                # This next part iterates through the deletion list and deletes the m2m relationship and then deletes the ChooseItem object
+                for check in checked_items:
+                    grocery_list.list_items.remove(ChooseItem.objects.get(pk=check))
+                    ChooseItem.objects.filter(pk=check).delete()
+            if recipe_form.is_valid():
+                # This part goes through every recipe in the list no matter what
+                for selection_recipe in recipe_form.cleaned_data:
+                    list_recipe = GroceryListRecipe.objects.get(pk=selection_recipe["id"].pk)
+                    if selection_recipe['recipe_quantity'] == list_recipe.recipe_quantity:
+                        continue
+                    elif selection_recipe['recipe_quantity'] > list_recipe.recipe_quantity:
+                        # This part adds to the list
+                        delta = selection_recipe["recipe_quantity"] - list_recipe.recipe_quantity
+                        for _ in range(delta):
+                            for ingredient in Recipe.objects.get(recipe_name=list_recipe).ingredients.all():
+                                item_name = ingredient.ingredient_name
+                                item_quantity = ingredient.ingredient_quantity
+                                item_quantity_unit = ingredient.quantity_unit
+                                choose_item = ChooseItem(item_name=item_name, item_quantity=item_quantity, item_quantity_unit=item_quantity_unit)
+                                choose_item.save()
+                                item_obj = ChooseItem.objects.get(pk=choose_item.pk)
+                                created = True
+                                for item in grocery_list.list_items.all():
+                                    if item.item_name == item_obj.item_name and item.item_quantity_unit == item_obj.item_quantity_unit:
+                                        item.item_quantity += item_obj.item_quantity
+                                        item.save()
+                                        item_obj.delete()
+                                        created = False
+                                if created:
+                                    grocery_list.list_items.add(ChooseItem.objects.get(pk=choose_item.pk))
+                    else:
+                        # This part takes away from the list
+                        delta = list_recipe.recipe_quantity - selection_recipe["recipe_quantity"]
+                        for _ in range(delta):
+                            for ingredient in Recipe.objects.get(recipe_name=list_recipe).ingredients.all():
+                                choose_item_obj = grocery_list.list_items.get(item_name=Food.objects.get(food_name=ingredient), item_quantity_unit=ingredient.quantity_unit)
+                                if choose_item_obj.item_quantity == ingredient.ingredient_quantity:
+                                    # Delete statement
+                                    grocery_list.list_items.remove(choose_item_obj)
+                                    ChooseItem.objects.filter(pk=choose_item_obj.pk).delete()
+                                else:
+                                    # Update statement 
+                                    choose_item_obj.item_quantity -= ingredient.ingredient_quantity
+                                    choose_item_obj.save()
+                recipe_form.save()
+                for obj in GroceryListRecipe.objects.all():
+                    if obj.recipe_quantity == 0:
+                        obj.delete()
+                checked_items = request.POST.getlist("delete")
+                for recipe in checked_items:
+                    for _ in range(GroceryListRecipe.objects.get(pk=recipe).recipe_quantity):
+                        for item in Recipe.objects.get(pk=GroceryListRecipe.objects.get(pk=recipe).recipe_from_list.pk).ingredients.all():
+                            # Delete/Update "list_item" and ChooseItem
+                            choose_item_obj = grocery_list.list_items.get(item_name=Food.objects.get(food_name=item), item_quantity_unit=item.quantity_unit)
+                            if choose_item_obj.item_quantity == item.ingredient_quantity:
+                                # Delete statement
+                                grocery_list.list_items.remove(choose_item_obj)
+                                ChooseItem.objects.filter(pk=choose_item_obj.pk).delete()
+                            else:
+                                # Update statement 
+                                choose_item_obj.item_quantity -= item.ingredient_quantity
+                                choose_item_obj.save()
+                    # Delete recipe from list
+                    GroceryListRecipe.objects.get(pk=recipe).delete()     
+            return HttpResponseRedirect(request.path_info)
     else:
         try:
             items_list = ChooseItem.objects.filter(items_list=grocery_list)
@@ -169,7 +235,6 @@ def grocery_detail_and_remove(request, pk):
         except:
             list_name = None
         individual_form = GroceryListRemoveFormset(queryset=ChooseItem.objects.filter(items_list=grocery_list))
-        recipe_form = GroceryListRemoveByRecipeFormset(queryset=GroceryList.objects.get(pk=pk).list_recipes.all())
-    return render(request, 'app_groceries/remove_from_list.html', {"grocery_list":grocery_list,"individual_form":individual_form, 'recipe_form': recipe_form, 'items_list': items_list, 'list_name': list_name})
-
-
+        recipe_form = GroceryListRemoveByRecipeFormset(queryset=GroceryListRecipe.objects.filter(grocery_list=grocery_list))
+        recipes_in_list = GroceryListRecipe.objects.filter(grocery_list=grocery_list)
+    return render(request, 'app_groceries/remove_from_list.html', {"grocery_list":grocery_list,"individual_form":individual_form, 'recipe_form': recipe_form, 'recipes_in_list':recipes_in_list,'items_list': items_list, 'list_name': list_name})
