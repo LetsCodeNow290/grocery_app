@@ -15,7 +15,7 @@ def choose_store(request):
     if request.method == "POST":
         form = SessionStoreForm(request.POST or None)
         if form.is_valid():
-            form_store_name = form.cleaned_data.get("choose_a_list")
+            form_store_name = form.cleaned_data.get("choose_a_store")
             request.session["store_pk"] = form_store_name.id
             request.session["store_name"] = form_store_name.store_name
             request.session["store_address"] = form_store_name.store_address
