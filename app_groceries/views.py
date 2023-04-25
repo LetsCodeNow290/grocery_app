@@ -38,9 +38,8 @@ def choose_list(request):
             list_of_lists = None
     return render(request, 'app_groceries/choose_list.html', {'new_list_form': new_list_form, 'list_of_lists': list_of_lists})
 
+
 # the 'pk' argument is added to the function so I can access the correct List object
-
-
 def add_to_list_main(request, pk):
     grocery_list = GroceryList.objects.get(pk=pk)
     grocery_list.list_store = GroceryStore.objects.get(pk=request.session["store_pk"])
@@ -134,13 +133,6 @@ GroceryListRemoveFormset = forms.modelformset_factory(
     fields = ['item_quantity',],
     extra = 0
 )
-
-# GroceryListRemoveByRecipeFormset = forms.modelformset_factory(
-#     GroceryList,
-#     form = RemoveItemByRecipe,
-#     fields=['list_recipes'],
-#     extra=0
-#     )
 
 GroceryListRemoveByRecipeFormset = forms.modelformset_factory(
     GroceryListRecipe,
