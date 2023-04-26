@@ -2,7 +2,8 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-
+<a class="btn btn-secondary" href="{% url 'recipe_list' %}">Back</a>
+<br><br>
 <div class='content-section'>
 
     <article class="media content-section">
@@ -17,7 +18,12 @@
                     {% if recipe.recipe_instructions == "" %}
                     {% else %}
                     <p class="article-content"></p>
-                <h4>Instructions:</h4> {{ recipe.recipe_instructions }}</p>
+                <h4>Instructions:</h4> <ol class="numbered-list">
+                    <ol class="numbered-list">
+                        {% for line in recipe.recipe_instructions_list %}
+                          <li>{{ line }}</li>
+                        {% endfor %}
+                      </ol></p>
 {% endif %}
                 <p class="article-content">
                 <h4>Recipe Book:</h4> <strong>{{ recipe.recipe_location }}</strong> on page

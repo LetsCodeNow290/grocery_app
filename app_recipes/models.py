@@ -24,6 +24,11 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.recipe_name
+    
+    # This bit allows the instructions to have line breaks. Right now it works after each sentence
+    @property
+    def recipe_instructions_list(self):
+        return self.recipe_instructions.splitlines()
 
     # These next lines are meant to store the files at a smaller size, but it wouldn't work
     def save(self, *args, **kwargs):
