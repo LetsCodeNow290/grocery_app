@@ -58,8 +58,8 @@ CSV fractions, edit/remove validation, list isolation, shared legacy items, and
 ephemeral local port; no existing application database or infrastructure is used.
 
 CI adds Python 3.12/3.14 × SQLite/PostgreSQL runs plus checks, fresh migration, and
-static collection. The local Python 3.12 combination awaits CI. Automated template
-rendering is not browser/device acceptance testing. No old live database was
+static collection. The [GitHub Actions matrix](https://github.com/LetsCodeNow290/grocery_app/actions/runs/41363834948)
+also passed all four Python/database combinations. Automated template rendering is not browser/device acceptance testing. No old live database was
 available, so migration of the owner's actual installation is not yet verified.
 
 ## Next increments to reach operational Phase 1
