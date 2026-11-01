@@ -6,7 +6,7 @@
 <div class='content-section'>
 
     <article class="media content-section">
-        <img class="rounded-circle article-img" src="{{ recipe.recipe_image.url }}">
+        {% if recipe.recipe_image %}<img class="rounded-circle article-img" src="{{ recipe.recipe_image.url }}">{% endif %}
         <div class="media-body">
             <h2>{{ recipe.recipe_name }}</h2><br>
             <h3>Rating: {{ recipe.recipe_rating }}</h3>

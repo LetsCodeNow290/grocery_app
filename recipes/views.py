@@ -1,79 +1,66 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import *
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .forms import *
-from django.forms.models import model_to_dict
-from groceries.models import GroceryList
+from django.views.generic import DetailView, UpdateView, DeleteView
 from django_filters.views import FilterView
 from django.contrib import messages
+from components.models import Food
+from .models import Recipe
+from .forms import RecipeForm, IngredientForm, AddFoodForm, RecipeToList, RecipeFilter
+from groceries.services import add_recipe
 
 
 def start_recipe(request):
     if request.method == "POST":
-        form = RecipeForm(request.POST or None)
+        form = RecipeForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save(commit=False)
-            for obj in Recipe.objects.all():
-                if str(obj)  == str(form.cleaned_data.get('recipe_name')).title():
-                    messages.error(request, f"{str(form.cleaned_data.get('recipe_name'))} is already in the database")
-                    return redirect(request.path)
-            form.save()
-            return redirect(f'/recipe/{form.save().pk}/add_ingredient')
+            if Recipe.objects.filter(recipe_name__iexact=form.cleaned_data['recipe_name']).exists():
+                form.add_error('recipe_name', 'This recipe already exists.')
+            else:
+                recipe = form.save()
+                return redirect('add_ingredients', pk=recipe.pk)
     else:
         form = RecipeForm()
     return render(request, 'recipes/recipe_form.html', {'form': form})
 
 def add_ingredient(request, pk):
+    recipe = get_object_or_404(Recipe, pk=pk)
+    form = IngredientForm()
+    add_food = AddFoodForm()
     if request.method == 'POST':
-        form = IngredientForm(request.POST or None)
-        add_food = AddFoodForm(request.POST or None)
-        recipe_validation = Recipe.objects.get(pk=pk).ingredients.all()
-        if form.is_valid() or add_food.is_valid():
+        if 'ingredient_name' in request.POST:
+            form = IngredientForm(request.POST)
             if form.is_valid():
-                form.save(commit=False)
-                for obj in recipe_validation:
-                    if str(obj) == str(form.cleaned_data.get('ingredient_name')):
-                        messages.error(
-                            request, f'{str(obj)} is already in the recipe')
-                        return redirect(f'/recipe/{pk}/add_ingredient')
-                quant_int = float(form.cleaned_data['whole_number_quantitiy'])
-                quant_frac = float(form.cleaned_data['fraction_quantity'])
-                quantity = quant_int + quant_frac
-                obj = Ingredient()
-                obj.ingredient_name = form.cleaned_data['ingredient_name']
-                obj.ingredient_quantity = quantity
-                obj.quantity_unit = form.cleaned_data['quantity_unit']
-                obj.save()
-                Recipe.objects.get(pk=pk).ingredients.add(
-                Ingredient.objects.get(pk=obj.pk))
+                if recipe.ingredients.filter(
+                        ingredient_name=form.cleaned_data['ingredient_name']).exists():
+                    form.add_error('ingredient_name', 'This food is already in the recipe.')
+                else:
+                    ingredient = form.save(commit=False)
+                    ingredient.ingredient_quantity = (
+                        form.cleaned_data['whole_number_quantitiy'] +
+                        float(form.cleaned_data['fraction_quantity']))
+                    ingredient.save()
+                    recipe.ingredients.add(ingredient)
+                    return redirect('add_ingredients', pk=pk)
+        else:
+            add_food = AddFoodForm(request.POST)
             if add_food.is_valid():
-                add_food.save(commit=False)
-                food_name_field = str(add_food.cleaned_data.get('food_name')).title()
-                if Food.objects.filter(food_name=food_name_field).exists():
-                    messages.error(request, f"{food_name_field} already exists in the database")
-                    return redirect(request.path)
-                add_food.save()
-                messages.success(request, f"{add_food.cleaned_data.get('food_name')} was added to the database")
-        return redirect(f'/recipe/{pk}/add_ingredient')
-
-    else:
-        form = IngredientForm()
-        data = Recipe.objects.get(pk=pk)
-        add_food = AddFoodForm()
-    return render(request, 'recipes/ingredient_form.html', {'form': form, 'data': data, 'add_food':add_food})
+                name = add_food.cleaned_data['food_name'].title()
+                if Food.objects.filter(food_name__iexact=name).exists():
+                    add_food.add_error('food_name', 'This food already exists.')
+                else:
+                    food = add_food.save()
+                    messages.success(request, f'{food} was added to the database')
+                    return redirect('add_ingredients', pk=pk)
+    return render(request, 'recipes/ingredient_form.html', {
+        'form': form, 'data': recipe, 'add_food': add_food})
 
 
 def recipe_to_list(request, pk):
-    if request.method == 'POST':
-        obj = get_object_or_404(Recipe, pk=pk)
-        form = RecipeToList(request.POST or None)
-        if form.is_valid():
-            form.cleaned_data['choose_a_list'].list_recipes.add(obj)
-            messages.success(request,
-                             f'{obj} added to {form.cleaned_data["choose_a_list"]}')
-        return redirect('/recipe_list/')
-    else:
-        form = RecipeToList()
+    recipe = get_object_or_404(Recipe, pk=pk)
+    form = RecipeToList(request.POST if request.method == 'POST' else None)
+    if request.method == 'POST' and form.is_valid():
+        add_recipe(form.cleaned_data['choose_a_list'], recipe)
+        messages.success(request, f'{recipe} added to {form.cleaned_data["choose_a_list"]}')
+        return redirect('recipe_list')
     return render(request, 'recipes/recipe_to_list_form.html', {'form': form})
 
 
@@ -81,7 +68,7 @@ class RecipeFilterList(FilterView):
     model = Recipe
     filterset_class = RecipeFilter
     context_object_name = 'recipes'
-    template_name = 'recipe_filter'
+    template_name = 'recipes/recipe_filter.html'
     paginate_by = 10
 
     def get_context_data(self, **kwargs):

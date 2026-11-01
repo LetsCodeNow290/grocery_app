@@ -18,10 +18,10 @@
 
 <div>
     <br>
-    {% for obj in filter.qs %}
+    {% for obj in recipes %}
     <article class="media content-section">
-        <a href="{{ obj.recipe_image.url }}"><img class="rounded-circle article-img"
-                src="{{ obj.recipe_image.url }}"></a>
+        {% if obj.recipe_image %}<a href="{{ obj.recipe_image.url }}"><img class="rounded-circle article-img"
+                src="{{ obj.recipe_image.url }}"></a>{% endif %}
         <div class="media-body">
             <p style="font-size: x-large;"><a href="{% url 'recipe_detail' pk=obj.pk %}">{{obj.recipe_name}}</a>
             </p>
@@ -44,21 +44,21 @@
     {% if is_paginated %}
 
     {% if page_obj.has_previous %}
-    <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    <a class="btn btn-outline-info mb-4" href="{% querystring page=1 %}">First</a>
+    <a class="btn btn-outline-info mb-4" href="{% querystring page=page_obj.previous_page_number %}">Previous</a>
     {% endif %}
 
     {% for num in page_obj.paginator.page_range %}
     {% if page_obj.number == num %}
-    <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+    <a class="btn btn-info mb-4" href="{% querystring page=num %}">{{ num }}</a>
     {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3'%} <a class="btn btn-outline-info mb-4"
-        href="?page={{ num }}">{{ num }}</a>
+        href="{% querystring page=num %}">{{ num }}</a>
         {% endif %}
         {% endfor %}
 
         {% if page_obj.has_next %}
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        <a class="btn btn-outline-info mb-4" href="{% querystring page=page_obj.next_page_number %}">Next</a>
+        <a class="btn btn-outline-info mb-4" href="{% querystring page=page_obj.paginator.num_pages %}">Last</a>
 
         {% endif %}
         {% endif %}

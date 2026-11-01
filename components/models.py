@@ -1,5 +1,4 @@
 from django.db import models
-from PIL import Image
 
 
 
@@ -56,13 +55,6 @@ class RecipeBook(models.Model):
         self.book_name = self.book_name.title()
         super().save(*args, **kwargs)
 
-        img = Image.open(self.recipe_book_image.path)
-        #img = img.rotate(-90)
-
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.recipe_book_image.path)
     class Meta:
         ordering = ['book_name',]
 

@@ -11,21 +11,24 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '36sr2skh#3dkb(w3x_z+i9@#ynxelm%xlvo!a4jjg6wwx*ki0u'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '')
+if not SECRET_KEY:
+    raise ImproperlyConfigured('Set a new DJANGO_SECRET_KEY in the environment or .env file.')
+DEBUG = os.environ.get('DJANGO_DEBUG', 'false').lower() in ('true', '1', 'yes')
+ALLOWED_HOSTS = [host.strip() for host in os.environ.get(
+    'DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,[::1]').split(',') if host.strip()]
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 
 # Application definition
@@ -38,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'crispy_bootstrap4',
     'recipes.apps.RecipesConfig',
     'components.apps.ComponentsConfig',
     'home.apps.HomeConfig',
@@ -84,12 +88,23 @@ WSGI_APPLICATION = 'grocery_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
+# PostgreSQL is the default; SQLite is an explicit local/test convenience.
+if os.environ.get('DB_ENGINE', 'postgresql') == 'sqlite':
+    DATABASES = {'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+        'NAME': os.environ.get('SQLITE_PATH', os.path.join(BASE_DIR, 'db.sqlite3')),
+    }}
+elif os.environ.get('DB_ENGINE', 'postgresql') == 'postgresql':
+    DATABASES = {'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB', 'grocery_app_dev'),
+        'USER': os.environ.get('POSTGRES_USER', 'grocery_app_dev'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', ''),
+        'HOST': os.environ.get('POSTGRES_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
+    }}
+else:
+    raise ImproperlyConfigured('DB_ENGINE must be postgresql or sqlite.')
 
 
 # Password validation
@@ -120,8 +135,6 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
-
 USE_TZ = True
 
 
@@ -130,10 +143,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILESDIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
-
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -9,8 +9,8 @@
 
     {% for recipe_book in object_list %}
     <article class="media content-section">
-        <a href="{{ recipe_book.recipe_book_image.url }}"><img class="rounded-circle article-img"
-                src="{{ recipe_book.recipe_book_image.url }}"></a>
+        {% if recipe_book.recipe_book_image %}<a href="{{ recipe_book.recipe_book_image.url }}"><img class="rounded-circle article-img"
+                src="{{ recipe_book.recipe_book_image.url }}"></a>{% endif %}
         <div class="media-body">
             <h3>{{ recipe_book }}</h3>
             {% if is_paginated %}

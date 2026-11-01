@@ -31,7 +31,7 @@ class ChooseItem(models.Model):
 class GroceryList(models.Model):
     list_name = models.DateField()
     list_items = models.ManyToManyField(
-        ChooseItem, related_name='items_list', blank=True)
+        ChooseItem, related_name='items_list', blank=True, through='GroceryListItems')
     list_recipes = models.ManyToManyField(
         Recipe, related_name='recipe_list', blank=True)
 
@@ -40,10 +40,10 @@ class GroceryList(models.Model):
 
 
     def make_list(self):
-        grocery_items = self.list_items.all()  # m2m sets
+        grocery_items = self.list_items.select_related('item_name__food_aisle', 'item_name__food_category')
         grocery_item_list = [{
             'food_name': item.item_name.food_name, 
-            "aisle": item.item_name.food_aisle.aisle_name,
+            "aisle": item.item_name.food_aisle.aisle_name if item.item_name.food_aisle else 'Unassigned',
             "food_category": item.item_name.food_category.food_category_name, 
             'quantity': item.item_quantity, 
             'quantity_unit_name': item.item_quantity_unit
@@ -65,3 +65,9 @@ class GroceryList(models.Model):
         return final_list
     
 
+
+
+class GroceryListItems(models.Model):
+    # Retain the original join table and its data from migration 0001.
+    choose_item = models.ForeignKey(ChooseItem, on_delete=models.CASCADE)
+    grocery_list = models.ForeignKey(GroceryList, on_delete=models.CASCADE)

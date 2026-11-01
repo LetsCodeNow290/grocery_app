@@ -30,16 +30,24 @@ QUANTITY_FRAC = [
 
 class IngredientForm(forms.ModelForm):
     fraction_quantity = forms.ChoiceField(choices=QUANTITY_FRAC)
-    whole_number_quantitiy = forms.IntegerField()
+    whole_number_quantitiy = forms.IntegerField(min_value=0)
     class Meta:
         model = Ingredient
         fields = 'ingredient_name', 'whole_number_quantitiy', 'fraction_quantity', 'quantity_unit'
+
+    def clean(self):
+        data = super().clean()
+        whole = data.get('whole_number_quantitiy')
+        fraction = data.get('fraction_quantity')
+        if whole is not None and fraction is not None and whole + float(fraction) <= 0:
+            raise forms.ValidationError('Ingredient quantity must be greater than zero.')
+        return data
 
 
 class RecipeFilter(django_filters.FilterSet):
     # The below code changes the default filter label to "ALL"
     recipe_category = django_filters.ModelChoiceFilter(queryset=RecipeCategory.objects.all(), empty_label="All")
-    ingredients = django_filters.ModelChoiceFilter(queryset=Food.objects.all(), empty_label="All")
+    ingredients = django_filters.ModelChoiceFilter(field_name='ingredients__ingredient_name', queryset=Food.objects.all(), empty_label="All", distinct=True)
 
 class RecipeToList(forms.Form):
     choose_a_list = forms.ModelChoiceField(

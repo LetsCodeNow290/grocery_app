@@ -36,14 +36,14 @@
             <button type="button" class="close" data-dismiss="alert">
                 ×
             </button>
-            <strong>{{message}}<strong>
+            <strong>{{message}}</strong>
         </div>
         {% endfor %}
         {% endif %}
     </div>
     
 
-    <div style="display: flex; justify-content: space-around">
+    <main class="app-columns">
 
         <div>{% block content %}
             {% endblock %}
@@ -51,8 +51,8 @@
         <div>{% block content2 %}
             {% endblock %}
         </div>
-    </div>
 
+    </main>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

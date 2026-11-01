@@ -6,6 +6,7 @@ from recipes.models import Recipe
 
 
 class ChooseItemForm(forms.ModelForm):
+    item_quantity = forms.FloatField(min_value=0.001)
     class Meta:
         model = ChooseItem
         fields = '__all__'
@@ -19,32 +20,12 @@ class GroceryListForm(forms.ModelForm):
         model = GroceryList
         fields = ['list_recipes']
     
-    # This override automaticly creates then saves items to the object
     def save(self, commit=True):
-        grocery_list = super(GroceryListForm, self).save(commit=False)
-        if commit:
-            grocery_list.save()
-
-        # Create ChooseItem objects for each ingredient in each recipe
-        grocery_list.list_recipes.add(self.cleaned_data.get('list_recipes'))
-        for ingredient in self.cleaned_data.get('list_recipes').ingredients.all():
-            item_name = ingredient.ingredient_name
-            item_quantity = ingredient.ingredient_quantity
-            item_quantity_unit = ingredient.quantity_unit
-            choose_item = ChooseItem(item_name=item_name, item_quantity=item_quantity, item_quantity_unit=item_quantity_unit)
-            choose_item.save()
-            item_obj = ChooseItem.objects.get(pk=choose_item.pk)
-            created = True
-            for item in grocery_list.list_items.all():
-                if item.item_name == item_obj.item_name and item.item_quantity_unit == item_obj.item_quantity_unit:
-                    item.item_quantity += item_obj.item_quantity
-                    item.save()
-                    item_obj.delete()
-                    created = False
-            if created == True:
-                grocery_list.list_items.add(ChooseItem.objects.get(pk=choose_item.pk))
-
-        return grocery_list
+        if not commit:
+            raise ValueError('Adding a recipe requires commit=True.')
+        from .services import add_recipe
+        add_recipe(self.instance, self.cleaned_data['list_recipes'])
+        return self.instance
 
 
 class DateInput(forms.DateInput):
@@ -58,6 +39,7 @@ class NewGroceryListForm(forms.ModelForm):
         widgets = {'list_name': DateInput(), }
 
 class RemoveItemFromList(forms.ModelForm):
+    item_quantity = forms.FloatField(min_value=0)
     class Meta:
         model = ChooseItem
         fields = ['item_quantity']

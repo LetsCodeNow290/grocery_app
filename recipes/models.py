@@ -1,6 +1,5 @@
 from django.db import models
 from components.models import *
-from PIL import Image
 
 RECIPE_RATING = (
     ("Don't make this again", "Don't make this again"),
@@ -29,18 +28,10 @@ class Recipe(models.Model):
     def __str__(self):
         return self.recipe_name
 
-    # These next lines are meant to store the files at a smaller size, but it wouldn't work
     def save(self, *args, **kwargs):
         self.recipe_name = self.recipe_name.title()
         super().save(*args, **kwargs)
 
-        img = Image.open(self.recipe_image.path)
-
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.recipe_image.path)
-        super().save(*args, **kwargs)
 
 UNITS = [
     ('teaspoon(s)', 'teaspoon(s)'),

@@ -1,3 +1,14 @@
 *.sqlite3
 /media/recipe_book_pics
 /media/recipe_pics
+
+.venv/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+staticfiles/
+.coverage
+*.dump
+backups/
