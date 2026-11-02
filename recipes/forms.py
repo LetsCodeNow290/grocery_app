@@ -1,4 +1,5 @@
 from django import forms
+from urllib.parse import urlsplit
 from .models import *
 from components.models import RecipeCategory, Food
 from groceries.models import GroceryList
@@ -68,9 +69,12 @@ class RecipeImportReviewForm(RecipeForm):
     recipe_instructions = forms.CharField(label='Instructions', max_length=100000,
                                          widget=forms.Textarea(attrs={'rows': 12}))
 
+    comments = forms.CharField(label='Notes / original browser copy', required=False, max_length=100000,
+                               widget=forms.Textarea(attrs={'rows': 6}))
+
     class Meta(RecipeForm.Meta):
         fields = ['source_url', 'recipe_name', 'recipe_category',
-                  'ingredient_text', 'recipe_instructions']
+                  'ingredient_text', 'recipe_instructions', 'comments']
         exclude = []
 
     def clean_recipe_name(self):
@@ -80,10 +84,61 @@ class RecipeImportReviewForm(RecipeForm):
         return name
 
     def clean_source_url(self):
-        url = self.cleaned_data['source_url']
-        if not url:
-            raise forms.ValidationError('Keep the recipe source URL for attribution.')
-        from urllib.parse import urlsplit
-        if urlsplit(url).scheme not in ('http', 'https'):
-            raise forms.ValidationError('Use an HTTP or HTTPS source URL.')
-        return url
+        return clean_recipe_source_url(self.cleaned_data['source_url'])
+
+
+def clean_recipe_source_url(url):
+    if not url:
+        raise forms.ValidationError('Keep the recipe source URL for attribution.')
+    parts = urlsplit(url)
+    if parts.scheme not in ('http', 'https') or parts.username is not None or parts.password is not None:
+        raise forms.ValidationError('Use an HTTP or HTTPS source URL without login credentials.')
+    return url
+
+
+class RecipeBrowserImportForm(forms.Form):
+    source_url = forms.URLField(label='Original recipe page URL', max_length=2048)
+    content = forms.CharField(
+        label='Recipe copied from your browser', required=False, max_length=100000,
+        widget=forms.Textarea(attrs={
+            'rows': 12,
+            'placeholder': 'Recipe title\n\nIngredients\n…\n\nDirections\n…',
+            'spellcheck': 'false',
+        }), help_text='Paste the title, ingredients, and directions. Review and correct them next.')
+    content_file = forms.FileField(
+        label='Or upload a saved page or text file', required=False,
+        widget=forms.FileInput(attrs={'accept': '.html,.htm,.json,.txt'}),
+        help_text='Optional: a UTF-8 HTML, JSON-LD, or text file, up to 2 MB. Paste or upload, not both.')
+
+    def clean_source_url(self):
+        return clean_recipe_source_url(self.cleaned_data['source_url'])
+
+    def clean(self):
+        from .importer import MAX_BYTES
+        data = super().clean()
+        if self.errors:
+            return data
+        pasted = data.get('content', '')
+        uploaded = data.get('content_file')
+        if bool(pasted) == bool(uploaded):
+            raise forms.ValidationError('Paste recipe content or choose a saved file (one or the other).')
+        if uploaded:
+            if not uploaded.name.lower().endswith(('.html', '.htm', '.json', '.txt')):
+                self.add_error('content_file', 'Choose an HTML, JSON-LD (.json), or text file.')
+                return data
+            if uploaded.size > MAX_BYTES:
+                self.add_error('content_file', 'The file is too large (maximum 2 MB).')
+                return data
+            raw = uploaded.read(MAX_BYTES + 1)
+            if len(raw) > MAX_BYTES:
+                self.add_error('content_file', 'The file is too large (maximum 2 MB).')
+                return data
+            try:
+                pasted = raw.decode('utf-8-sig')
+            except UnicodeDecodeError:
+                self.add_error('content_file', 'Save the file as UTF-8 text, or paste the visible recipe instead.')
+                return data
+        if not pasted.strip():
+            raise forms.ValidationError('The supplied content is empty. Copy the recipe text and try again.')
+        data['browser_content'] = pasted
+        return data

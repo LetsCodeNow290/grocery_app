@@ -6,23 +6,62 @@
     <h1>Review recipe</h1>
     <p>Check and edit the name, ingredients, and instructions before saving.</p>
     <p>Ingredient quantities are kept as text. After saving, you can add foods and quantities for grocery lists.</p>
-    <form method="post">
+    <form method="post" class="mb-3">
         {% csrf_token %}
         <input type="hidden" name="step" value="save">
-        {{ review_form|crispy }}
+        {% if review_hint %}<p class="alert alert-info" role="status">{{ review_hint }}</p>{% endif %}
+        {{ review_form.non_field_errors }}
+        {% for field in review_form %}
+            {% if field.name != 'comments' %}{{ field|as_crispy_field }}{% endif %}
+        {% endfor %}
+        <details class="mb-3" {% if review_form.comments.errors %}open{% endif %}>
+            <summary class="py-2">Notes / original browser copy (optional)</summary>
+            {{ review_form.comments|as_crispy_field }}
+        </details>
         <button class="btn btn-primary" type="submit">Save reviewed recipe</button>
         <a class="btn btn-secondary" href="{% url 'recipe_import' %}">Cancel</a>
     </form>
 {% else %}
     <h1>Import a recipe</h1>
     <p>Paste a public recipe page URL. You’ll review the extracted recipe before anything is saved.</p>
-    <form method="post">
+    <form method="post" class="mb-3">
         {% csrf_token %}
         {{ url_form|crispy }}
         <button class="btn btn-primary" type="submit">Extract recipe</button>
     </form>
-    <p>Works with websites that publish Recipe JSON-LD. Some sites block downloads or require JavaScript.</p>
-    <a href="{% url 'start_recipe' %}">Enter a recipe manually</a>
+    <p>Some websites block automatic downloads. If that happens, copy the recipe from your browser below.</p>
+    <details id="browser-import" class="mt-3 mb-3" {% if browser_open %}open{% endif %}>
+        <summary class="py-2">Copy from browser — when a website blocks imports</summary>
+        <h2>Copy from browser</h2>
+        <ol>
+            <li>Open the recipe in your browser. Use “Jump to recipe” if available.</li>
+            <li>On desktop, select and copy the recipe title, ingredients, and directions.
+                On a phone, press and hold the text, adjust the selection handles, then tap Copy.</li>
+            <li>Return here, paste the recipe below, and review it before saving.</li>
+        </ol>
+        <p>Keep the Ingredients and Directions (or Instructions) headings when copying.
+            If they are missing, you can organize the copied text in the review form.</p>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="step" value="browser">
+            {{ browser_form.non_field_errors }}
+            {{ browser_form.source_url|as_crispy_field }}
+            <button class="btn btn-outline-secondary" type="button" id="open-recipe-page" hidden>Open recipe page in a new tab</button>
+            <p id="open-recipe-help" role="status"></p>
+            {{ browser_form.content|as_crispy_field }}
+            <details class="mb-3" {% if browser_advanced_open or browser_form.content_file.errors %}open{% endif %}>
+                <summary class="py-2">Saved page or structured data (optional)</summary>
+                <p>You can also paste Recipe JSON-LD or page HTML above, or choose a saved file below.
+                    On desktop, use your browser’s Save page command and select HTML only.
+                    Files are read for extraction and are not stored.</p>
+                {{ browser_form.content_file|as_crispy_field }}
+            </details>
+            <button class="btn btn-primary" type="submit">Review copied recipe</button>
+        </form>
+    </details>
+    <p><a href="{% url 'start_recipe' %}">Enter a recipe manually</a></p>
+    {% load static %}
+    <script src="{% static 'recipes/browser_import.js' %}" defer></script>
 {% endif %}
 </div>
 {% endblock %}

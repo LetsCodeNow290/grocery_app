@@ -18,6 +18,11 @@
                 <p>These ingredient lines are saved as text. To include them in grocery lists,
                     <a href="{% url 'add_ingredients' pk=recipe.pk %}">add foods and quantities</a>.</p>
                 {% endif %}
+                {% if recipe.comments %}
+                <details><summary>Notes / original browser copy</summary>
+                    <p class="article-content">{{ recipe.comments }}</p>
+                </details>
+                {% endif %}
                 <p class="article-content">
                 <h4>Recipe Category:</h4> {{ recipe.recipe_category }}</p>
                 

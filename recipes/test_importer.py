@@ -204,6 +204,8 @@ class SafeFetchTests(SimpleTestCase):
 
     def test_blocked_response_types_status_and_compression(self):
         cases = [('403 Forbidden', {}, 'HTTP 403'),
+                 ('401 Unauthorized', {}, 'Copy from browser'),
+                 ('429 Too Many Requests', {}, 'Copy from browser'),
                  ('200 OK', {'Content-Type': 'application/pdf'}, 'HTML'),
                  ('200 OK', {'Content-Encoding': 'gzip'}, 'compressed'),
                  ('302 Found', {}, 'redirect')]

@@ -90,6 +90,7 @@ class RecipeUpdate(UpdateView):
         'recipe_instructions',
         'source_url',
         'ingredient_text',
+        'comments',
         'recipe_location',
         'location_page_number'
     ]
@@ -136,11 +137,15 @@ class RecipeDetail(DetailView):
 def recipe_import(request):
     from django.db import transaction
     from components.models import RecipeCategory
-    from .forms import RecipeImportURLForm, RecipeImportReviewForm
-    from .importer import RecipeImportError, import_url
+    from .forms import RecipeImportURLForm, RecipeImportReviewForm, RecipeBrowserImportForm
+    from .importer import RecipeImportError, import_url, extract_browser_content
 
     url_form = RecipeImportURLForm()
     review_form = None
+    browser_form = RecipeBrowserImportForm()
+    browser_open = False
+    browser_advanced_open = False
+    review_hint = ''
     if request.method == 'POST':
         if request.POST.get('step') == 'save':
             review_form = RecipeImportReviewForm(request.POST)
@@ -154,14 +159,37 @@ def recipe_import(request):
                     recipe.save()
                 messages.success(request, 'Recipe saved. Ingredient text is preserved; add foods and quantities to use it in grocery lists.')
                 return redirect('recipe_detail', pk=recipe.pk)
+        elif request.POST.get('step') == 'browser':
+            browser_open = True
+            browser_advanced_open = bool(request.FILES)
+            browser_form = RecipeBrowserImportForm(request.POST, request.FILES)
+            if browser_form.is_valid():
+                try:
+                    draft = extract_browser_content(browser_form.cleaned_data['browser_content'])
+                except RecipeImportError as error:
+                    browser_form.add_error(None, str(error))
+                else:
+                    draft['source_url'] = browser_form.cleaned_data['source_url']
+                    review_form = RecipeImportReviewForm(initial=draft)
+                    if draft.get('comments'):
+                        review_hint = ('Check the suggested fields. Your complete browser copy is kept in Notes.')
+                        if not draft.get('ingredient_text'):
+                            review_hint = ('Ingredient and instruction headings were not recognized. '
+                                           'All copied text is kept in Instructions and Notes. '
+                                           'Enter a recipe name and move ingredient lines into Ingredients before saving.')
         else:
             url_form = RecipeImportURLForm(request.POST)
             if url_form.is_valid():
+                source_url = url_form.cleaned_data['url']
                 try:
-                    draft = import_url(url_form.cleaned_data['url'])
+                    draft = import_url(source_url)
                 except RecipeImportError as error:
                     url_form.add_error('url', str(error))
+                    browser_open = True
+                    browser_form = RecipeBrowserImportForm(initial={'source_url': source_url})
                 else:
                     review_form = RecipeImportReviewForm(initial=draft)
     return render(request, 'recipes/recipe_import.html', {
-        'url_form': url_form, 'review_form': review_form})
+        'url_form': url_form, 'review_form': review_form,
+        'browser_form': browser_form, 'browser_open': browser_open,
+        'browser_advanced_open': browser_advanced_open, 'review_hint': review_hint})

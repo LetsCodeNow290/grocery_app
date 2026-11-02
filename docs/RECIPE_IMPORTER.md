@@ -68,8 +68,82 @@ system resolver and its timeout. Sites that insist on compressed content are
 reported as unsupported. Forms retain Django CSRF protection and render source
 text with HTML escaping.
 
-The full suite currently has 64 tests, including focused mocked network/extraction
+The initial URL-import suite had 64 tests, including focused mocked network/extraction
 and review/save tests, manual conversion into grocery items, and a migration
 regression test that retains old recipe/ingredient/list links. Automated tests
 make no requests to external recipe sites. Live local HTTP verification covers
 extraction into review; saving is exercised against disposable test databases.
+
+## When a website blocks imports: copy from your browser
+
+The URL importer still uses its original fetch security checks. For HTTP 401, 403,
+or 429, it now explains that automatic downloading was blocked and points to
+**Copy from browser**. Any fetch/extraction failure opens that section with the
+original recipe URL already filled in. You can also open it directly without
+trying a server download first.
+
+1. Open <http://127.0.0.1:8000/recipe/import/>. Expand **Copy from browser** if it
+   is not already open.
+2. Enter/keep the recipe page URL. **Open recipe page in a new tab** opens it in
+   your own browser; it does not start another server download. If JavaScript is
+   disabled, open the URL manually instead.
+3. Use the website's **Jump to recipe** button if available. On desktop, select
+   and copy from the recipe title through the last direction. On a phone, press
+   and hold the text, adjust the selection handles, and choose **Copy**. Keep
+   the **Ingredients** and **Directions/Instructions** headings when available.
+4. Return to the app and paste into **Recipe copied from your browser**.
+5. Select **Review copied recipe**, correct the proposed fields, and save with
+   the existing **Save reviewed recipe** button. Nothing is saved before review.
+
+Heading recognition supports Ingredients followed by Directions, Instructions,
+Method, or Preparation. It makes suggestions; it does not parse food quantities
+or promise to understand every page layout. The complete plain-text copy is
+kept in **Notes / original browser copy**, including preambles and unknown
+sections. If headings are missing, all text remains in Instructions and Notes;
+enter a title and move ingredient lines into Ingredients before saving. Notes
+can be edited/removed during review or through the existing recipe update page.
+Source attribution and ingredient text retain the same existing model fields.
+
+For desktop users, **Saved page or structured data** also accepts a UTF-8 `.html`,
+`.htm`, `.json`, or `.txt` file (up to 2 MB), or pasted Recipe JSON-LD/page HTML.
+Use your browser's **Save page → HTML only** option. Choose either pasted text or
+one file. HTML/JSON uses the same Recipe JSON-LD extractor as URL imports; page
+scripts, linked contexts, images, and redirects are never executed or fetched.
+Files are not retained in media storage. Visible text/pasted text files are
+limited to 100,000 characters so the full copy remains editable in review.
+
+This fallback consumes only the content you supply: it makes no network request,
+does not import browser cookies, and does not change the remote website's access
+controls. Normal browser access is still necessary to copy or save that page.
+There are no CAPTCHA solvers, headless downloads of blocked sites, proxy rotation,
+identity rotation, or alternate endpoint probes. This increment needs no database
+migration and does not replace the active SQLite file.
+
+### Allrecipes investigation
+
+For the reported URL, <https://www.allrecipes.com/recipe/275590/marry-me-chicken>,
+standard direct requests from this WSL environment returned HTTP 403 with a
+`Server: cloudflare` response. The trailing-slash URL and a single ordinary
+browser-header request also returned 403; a normal Windows `Invoke-WebRequest`
+request returned 403 as well. No structured data could be obtained through those
+requests. The exact blocking rule cannot be determined from a 403 response.
+Changing production request headers would not fix the observed failure, so the
+identifiable importer User-Agent and all fetch restrictions remain intact.
+
+### Reliability validation
+
+The suite now has 84 tests, including the original 64 tests plus 20 browser-copy
+regressions. They cover 403 handoff/source prefill, text/HTML/JSON-LD review and
+save, unmatched text retention, original-copy notes, file/type/encoding/size
+errors, CSRF, escaping, source validation, and the absence of network calls in
+the fallback. Existing fetch tests also cover 401/429 guidance.
+
+Local HTTP verification reproduced Allrecipes' 403 and checked that it opens the
+fallback with the source intact; browser-copy review and the existing automatic
+BBC Good Food import still worked. Chromium checks exercised copy → review →
+save on desktop (1280 px) and mobile viewports (390 px and 320 px), plus a saved
+HTML upload, using a separate SQLite copy. Source URLs, fractions, and complete
+copy notes persisted; no horizontal overflow or page script errors occurred.
+Those checks use only the local application, not automated browsing of blocked
+recipe sites. They are viewport tests, not physical iOS/Android device testing.
+The active SQLite database did not receive synthetic browser-test recipes.

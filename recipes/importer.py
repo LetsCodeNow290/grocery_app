@@ -125,6 +125,10 @@ def fetch_html(url):
                             raise RecipeImportError('An insecure redirect was blocked. Use the final HTTPS recipe URL.')
                         url = next_url
                         continue
+                    if response.status in (401, 403, 429):
+                        raise RecipeImportError(
+                            f'The website blocked automatic downloading (HTTP {response.status}). '
+                            'Open the page in your browser, then use Copy from browser below.')
                     if response.status != 200:
                         raise RecipeImportError(f'The website returned HTTP {response.status}. Try another public recipe URL.')
                     if response.headers.get_content_type() not in ('text/html', 'application/xhtml+xml'):
@@ -234,7 +238,10 @@ def _recipes(value):
 
 def extract_recipe(html):
     scripts = _Scripts()
-    scripts.feed(html)
+    if html.lstrip('\ufeff \r\n\t').startswith(('{', '[')):
+        scripts.scripts.append(html.lstrip('\ufeff'))
+    else:
+        scripts.feed(html)
     try:
         for script in scripts.scripts:
             try:
@@ -264,3 +271,32 @@ def extract_recipe(html):
 def import_url(url):
     html, source = fetch_html(url)
     return {**extract_recipe(html), 'source_url': source}
+
+
+def extract_browser_content(content):
+    """Read user-supplied content only: never follow a URL, script, or context."""
+    if len(content.encode('utf-8')) > MAX_BYTES:
+        raise RecipeImportError('The supplied content is too large (maximum 2 MB).')
+    stripped = content.lstrip('\ufeff \r\n\t')
+    if stripped.startswith(('{', '[')) or re.search(
+            r'<(?:!doctype\b|html\b|head\b|body\b|script\b)', stripped, re.IGNORECASE):
+        return extract_recipe(stripped)
+    if len(content) > 100000:
+        raise RecipeImportError('Copy just the recipe text (maximum 100,000 characters).')
+    # Heading recognition is deliberately conservative. All copied text is kept
+    # in notes, including preambles, unrecognized sections, and quantity labels.
+    lines = content.strip().splitlines()
+    headings = [line.strip().rstrip(':').strip().casefold() for line in lines]
+    ingredient_heading = next((i for i, value in enumerate(headings) if value == 'ingredients'), None)
+    instruction_heading = next((i for i, value in enumerate(headings)
+                                if value in ('instructions', 'directions', 'method', 'preparation')
+                                and ingredient_heading is not None and i > ingredient_heading), None)
+    draft = {'recipe_name': '', 'ingredient_text': '',
+             'recipe_instructions': content.strip(), 'comments': content.strip()}
+    if ingredient_heading is not None and instruction_heading is not None:
+        titles = [line.strip() for line in lines[:ingredient_heading] if line.strip()]
+        if titles and len(titles[0]) <= 100:
+            draft['recipe_name'] = titles[0]
+        draft['ingredient_text'] = '\n'.join(lines[ingredient_heading + 1:instruction_heading]).strip()
+        draft['recipe_instructions'] = '\n'.join(lines[instruction_heading + 1:]).strip()
+    return draft
