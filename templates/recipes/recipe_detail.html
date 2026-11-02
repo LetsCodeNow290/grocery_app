@@ -1,50 +1,36 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
 {% block content %}
-
-
-<div class='content-section'>
-
-    <article class="media content-section">
-        {% if recipe.recipe_image %}<img class="rounded-circle article-img" src="{{ recipe.recipe_image.url }}">{% endif %}
-        <div class="media-body">
-            <h2>{{ recipe.recipe_name }}</h2><br>
-            <h3>Rating: {{ recipe.recipe_rating }}</h3>
-            <div class="article-metadata">
-                {% if recipe.source_url %}<p>Source: <a href="{{ recipe.source_url }}" rel="noopener noreferrer">{{ recipe.source_url }}</a></p>{% endif %}
-                {% if recipe.ingredient_text %}
-                <h4>Ingredient text</h4>
-                <p class="article-content">{{ recipe.ingredient_text }}</p>
-                <p>These ingredient lines are saved as text. To include them in grocery lists,
-                    <a href="{% url 'add_ingredients' pk=recipe.pk %}">add foods and quantities</a>.</p>
-                {% endif %}
-                {% if recipe.comments %}
-                <details><summary>Notes / original browser copy</summary>
-                    <p class="article-content">{{ recipe.comments }}</p>
-                </details>
-                {% endif %}
-                <p class="article-content">
-                <h4>Recipe Category:</h4> {{ recipe.recipe_category }}</p>
-                
-                    {% if recipe.recipe_instructions == "" %}
-                    {% else %}
-                    <p class="article-content"></p>
-                <h4>Instructions:</h4><p class="article-content">{{ recipe.recipe_instructions }}</p>
-{% endif %}
-                <p class="article-content">
-                <h4>Recipe Book:</h4> <strong>{{ recipe.recipe_location }}</strong> on page
-                {{recipe.location_page_number}}
-                </p>
-                <p class="article-content">
-                <h4>Ingredients:</h4> {% for ingred in recipe.ingredients.all %}
-                <li>{{ ingred }}</li>
-                {% endfor %}
-                </p>
-
-
-
-            </div>
-    </article>
-</div>
-
+<article class="content-section recipe-detail">
+    <h1>{{ recipe.recipe_name }}</h1>
+    {% if recipe.recipe_image %}<img class="rounded-circle article-img" src="{{ recipe.recipe_image.url }}" alt="{{ recipe.recipe_name }}">{% endif %}
+    <p>Rating: {{ recipe.recipe_rating|default:'Not rated' }}</p>
+    <p>Category: {{ recipe.recipe_category }}</p>
+    {% if recipe.source_url %}<p>Source: <a href="{{ recipe.source_url }}" rel="noopener noreferrer">{{ recipe.source_url }}</a></p>{% endif %}
+    <p><a class="btn btn-primary" href="{% url 'recipe_to_list' pk=recipe.pk %}">Add recipe to grocery list</a></p>
+    {% if recipe.ingredient_text and not recipe.ingredients.exists %}
+    <p><a href="{% url 'process_recipe_ingredients' pk=recipe.pk %}">Review ingredient matches for grocery lists</a></p>
+    {% endif %}
+    <h2>Ingredients</h2>
+    <ul>
+    {% for ingred in recipe.ingredients.all %}
+        <li>{{ ingred.ingredient_quantity }}{% if ingred.quantity_max %}–{{ ingred.quantity_max }}{% endif %}
+            {{ ingred.quantity_unit }} {{ ingred }}
+            {% if ingred.preparation_notes %} — {{ ingred.preparation_notes }}{% endif %}
+            {% if ingred.original_text %}<small class="d-block">Original: {{ ingred.original_text }}</small>{% endif %}
+        </li>
+    {% empty %}<li>No confirmed shopping ingredients yet.</li>{% endfor %}
+    </ul>
+    {% if recipe.ingredient_review_exclusions %}
+    <h3>Reference only — not on grocery lists</h3>
+    <ul>{% for line in recipe.ingredient_review_exclusions %}<li>{{ line.original_text }}{% if line.notes %} — {{ line.notes }}{% endif %}</li>{% endfor %}</ul>
+    {% endif %}
+    {% if recipe.ingredient_text %}
+    <details><summary class="py-2">Original ingredient text</summary><p class="article-content">{{ recipe.ingredient_text }}</p></details>
+    {% endif %}
+    {% if recipe.recipe_instructions %}<h2>Instructions</h2><p class="article-content">{{ recipe.recipe_instructions }}</p>{% endif %}
+    {% if recipe.recipe_location %}<p>Recipe book: {{ recipe.recipe_location }}{% if recipe.location_page_number %}, page {{ recipe.location_page_number }}{% endif %}</p>{% endif %}
+    {% if recipe.comments %}
+    <details><summary class="py-2">Notes / original browser copy</summary><p class="article-content">{{ recipe.comments }}</p></details>
+    {% endif %}
+</article>
 {% endblock %}

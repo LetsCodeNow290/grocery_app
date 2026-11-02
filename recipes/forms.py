@@ -142,3 +142,88 @@ class RecipeBrowserImportForm(forms.Form):
             raise forms.ValidationError('The supplied content is empty. Copy the recipe text and try again.')
         data['browser_content'] = pasted
         return data
+
+
+class IngredientQuantityField(forms.FloatField):
+    widget = forms.TextInput(attrs={'inputmode': 'decimal'})
+
+    def to_python(self, value):
+        from .ingredient_processing import parse_quantity
+        if value in self.empty_values:
+            return None
+        try:
+            return parse_quantity(value)
+        except (ValueError, ZeroDivisionError, OverflowError):
+            raise forms.ValidationError('Enter a positive amount such as 1.5, 1/2, or 1 1/2.')
+
+
+class IngredientMatchForm(forms.Form):
+    original_text = forms.CharField(max_length=100000, widget=forms.HiddenInput)
+    quantity = IngredientQuantityField(label='Quantity', min_value=0.000001, max_value=1000000, required=False)
+    quantity_max = IngredientQuantityField(label='Upper quantity (ranges only)', min_value=0.000001,
+                                   max_value=1000000, required=False,
+                                   help_text='Shopping uses this upper amount when a range is retained.')
+    unit = forms.ChoiceField(choices=UNITS)
+    food = forms.ModelChoiceField(queryset=Food.objects.all(), required=False,
+                                 label='Existing food', empty_label='Create / reuse food named below')
+    new_food_name = forms.CharField(label='New food name', max_length=100, required=False)
+    new_food_category = forms.ModelChoiceField(queryset=FoodCategory.objects.all(), required=False,
+                                              label='Category for new food', empty_label='Imported (default)')
+    new_food_aisle = forms.ModelChoiceField(queryset=Aisle.objects.all(), required=False,
+                                           label='Aisle for new food', empty_label='Unassigned')
+    preparation_notes = forms.CharField(required=False, max_length=10000,
+                                       widget=forms.Textarea(attrs={'rows': 2}))
+    confirm_uncertain = forms.BooleanField(required=False, label='I checked the flagged details')
+    reference_only = forms.BooleanField(required=False,
+        label='Keep as reference only — do not add this line to grocery lists')
+
+    def __init__(self, *args, index=None, **kwargs):
+        from .ingredient_processing import parse_ingredient, normalize_food_name
+        super().__init__(*args, **kwargs)
+        self.index = index or {}
+        self.original = self['original_text'].value() or ''
+        parsed = parse_ingredient(self.original)
+        self.warnings = parsed['warnings'][:]
+        if len(self.index.get(normalize_food_name(parsed['food_name']), [])) > 1:
+            self.warnings.append('Several foods match this name. Choose the intended existing food.')
+        self.show_new_food = not self['food'].value()
+
+    def clean(self):
+        from .ingredient_processing import normalize_food_name
+        data = super().clean()
+        if data.get('reference_only'):
+            return data
+        if data.get('quantity') is None:
+            self.add_error('quantity', 'Enter a quantity, or explicitly keep this line as reference only.')
+        if data.get('quantity_max') is not None and data.get('quantity') is not None:
+            if data['quantity_max'] < data['quantity']:
+                self.add_error('quantity_max', 'The upper amount must be at least the lower amount.')
+        if (self.warnings or data.get('quantity_max') is not None) and not data.get('confirm_uncertain'):
+            self.add_error('confirm_uncertain', 'Confirm the flagged details or keep this line as reference only.')
+        if not data.get('food'):
+            name = data.get('new_food_name', '')
+            key = normalize_food_name(name)
+            if not key:
+                self.add_error('new_food_name', 'Choose an existing food or enter a food name.')
+            elif len(key) > 100:
+                self.add_error('new_food_name', 'Choose a shorter food name.')
+            elif len(self.index.get(key, [])) > 1:
+                self.add_error('food', 'Several existing foods match. Select one; no duplicate will be created.')
+        return data
+
+
+class BaseIngredientMatchFormSet(forms.BaseFormSet):
+    def __init__(self, *args, expected_lines=(), **kwargs):
+        self.expected_lines = list(expected_lines)
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        submitted = [form['original_text'].value() for form in self.forms]
+        if submitted != self.expected_lines:
+            raise forms.ValidationError('Ingredient lines changed or are missing. Refresh ingredient suggestions and review every line before saving.')
+
+
+IngredientMatchFormSet = forms.formset_factory(
+    IngredientMatchForm, formset=BaseIngredientMatchFormSet, extra=0,
+    max_num=200, absolute_max=200, validate_max=True)

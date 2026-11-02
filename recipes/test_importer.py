@@ -10,6 +10,7 @@ from groceries.models import GroceryList
 from groceries.services import add_recipe
 from .importer import RecipeImportError, extract_recipe, fetch_html
 from .models import Ingredient, Recipe
+from .test_support import reviewed_payload
 
 
 def page(recipe):
@@ -272,7 +273,7 @@ class ImportWorkflowTests(TestCase):
         data['recipe_name'] = 'Corrected soup'
         data['ingredient_text'] += '\n2–3 eggs (optional)'
         data['recipe_instructions'] = 'Reviewed instructions.'
-        response = self.client.post(reverse('recipe_import'), data)
+        response = self.client.post(reverse('recipe_import'), reviewed_payload(data))
         recipe = Recipe.objects.get()
         self.assertRedirects(response, reverse('recipe_detail', args=[recipe.pk]))
         self.assertEqual(recipe.recipe_name, 'Corrected Soup')
@@ -281,18 +282,18 @@ class ImportWorkflowTests(TestCase):
         self.assertEqual(recipe.recipe_instructions, 'Reviewed instructions.')
         self.assertEqual(recipe.recipe_category.recipe_category_name, 'Imported')
         self.assertEqual(recipe.recipe_rating, "Haven't Made it Yet")
-        self.assertFalse(Ingredient.objects.exists())
+        self.assertEqual(Ingredient.objects.count(), 3)
         detail = self.client.get(reverse('recipe_detail', args=[recipe.pk]))
         self.assertContains(detail, 'Salt, to taste')
         self.assertContains(detail, data['source_url'])
-        self.assertContains(detail, 'add foods and quantities')
+        self.assertContains(detail, 'Add recipe to grocery list')
 
     def test_existing_recipe_and_category_are_preserved(self):
         category = RecipeCategory.objects.create(recipe_category_name='dinner')
         old = Recipe.objects.create(recipe_name='Existing recipe', recipe_category=category,
                                     recipe_instructions='Keep this', comments='Keep notes')
         data = {**self.reviewed(), 'recipe_category': category.pk}
-        self.client.post(reverse('recipe_import'), data)
+        self.client.post(reverse('recipe_import'), reviewed_payload(data))
         old.refresh_from_db()
         self.assertEqual(old.recipe_instructions, 'Keep this')
         self.assertEqual(old.comments, 'Keep notes')
@@ -304,7 +305,7 @@ class ImportWorkflowTests(TestCase):
     @patch('recipes.importer.import_url')
     def test_invalid_review_keeps_text_and_does_not_refetch(self, fetch):
         data = dict(self.reviewed(), recipe_name='')
-        response = self.client.post(reverse('recipe_import'), data)
+        response = self.client.post(reverse('recipe_import'), reviewed_payload(data))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['review_form'].errors)
         self.assertContains(response, 'Salt, to taste')
@@ -314,7 +315,7 @@ class ImportWorkflowTests(TestCase):
 
     def test_duplicate_confirmation_does_not_duplicate_recipe(self):
         for _ in range(2):
-            response = self.client.post(reverse('recipe_import'), self.reviewed())
+            response = self.client.post(reverse('recipe_import'), reviewed_payload(self.reviewed()))
         self.assertContains(response, 'already exists')
         self.assertEqual(Recipe.objects.count(), 1)
 
@@ -334,24 +335,19 @@ class ImportWorkflowTests(TestCase):
 
     def test_untrusted_text_is_escaped_on_review_and_detail(self):
         data = dict(self.reviewed(), ingredient_text='<img src=x onerror=alert(1)>')
-        self.client.post(reverse('recipe_import'), data)
+        self.client.post(reverse('recipe_import'), reviewed_payload(data))
         response = self.client.get(reverse('recipe_detail', args=[Recipe.objects.get().pk]))
         self.assertContains(response, '&lt;img src=x onerror=alert(1)&gt;')
         self.assertNotContains(response, '<img src=x onerror=alert(1)>')
 
-    def test_manual_ingredient_workflow_reaches_grocery_list(self):
-        self.client.post(reverse('recipe_import'), self.reviewed())
+    def test_confirmed_import_reaches_grocery_list_without_manual_reentry(self):
+        self.client.post(reverse('recipe_import'), reviewed_payload(self.reviewed()))
         recipe = Recipe.objects.get()
-        self.assertContains(self.client.get(reverse('add_ingredients', args=[recipe.pk])), '1 1/2 cups milk')
-        food = Food.objects.create(food_name='milk', food_category=
-                                   FoodCategory.objects.create(food_category_name='dairy'), food_aisle=None)
-        self.client.post(reverse('add_ingredients', args=[recipe.pk]), {
-            'ingredient_name': food.pk, 'whole_number_quantitiy': '1',
-            'fraction_quantity': '0.5', 'quantity_unit': 'cup(s)'})
         grocery_list = GroceryList.objects.create(list_name='2026-11-02')
         add_recipe(grocery_list, recipe)
-        self.assertEqual(grocery_list.list_items.get().item_quantity, 1.5)
+        self.assertEqual(grocery_list.list_items.get(item_name__food_name='Milk').item_quantity, 1.5)
         self.assertEqual(recipe.ingredient_text, self.draft()['ingredient_text'])
+        self.assertEqual(len(recipe.ingredient_review_exclusions), 1)
 
 
 class ImportMigrationTests(TransactionTestCase):
@@ -386,6 +382,9 @@ class ImportMigrationTests(TransactionTestCase):
             self.assertEqual(saved.recipe_instructions, 'Keep instructions')
             self.assertEqual(saved.comments, 'Keep notes')
             self.assertEqual(saved.ingredient_text, '')
+            self.assertEqual(saved.ingredient_review_exclusions, [])
+            self.assertIsNone(saved.ingredients.get().quantity_max)
+            self.assertEqual(saved.ingredients.get().original_text, '')
             self.assertEqual(saved.source_url, '')
             self.assertEqual(saved.ingredients.get().ingredient_quantity, 1.25)
             saved_list = GroceryList.objects.get(pk=grocery_list.pk)

@@ -22,13 +22,12 @@ without saving a recipe.
 
 ## Ingredients and grocery lists
 
-All ingredient lines and quantities remain editable text in `Recipe.ingredient_text`.
-The importer deliberately does not guess numeric amounts, units, or food matches.
-The saved recipe shows the text and a link to **add foods and quantities** using
-the existing ingredient workflow. That page shows the imported text as a reference.
-Once foods/quantities are entered, the existing recipe-to-grocery-list workflow
-works normally. Text alone does not generate shopping items. This is the main
-MVP limitation; no advanced ingredient matching is included.
+Import review now parses ingredient lines, matches existing foods, and lets you
+correct amounts/units or create missing foods before saving confirmed Ingredient
+relationships. Original text is retained. Uncertain lines require confirmation
+or an explicit reference-only choice; ranges use the confirmed upper amount for
+shopping. See [INGREDIENT_PROCESSING.md](INGREDIENT_PROCESSING.md) for the workflow,
+prior-import processing, consolidation rules, and limits.
 
 Source attribution is stored in `Recipe.source_url`. Both fields can be edited
 through the existing recipe update form. No remote images are fetched. Photo/PDF
@@ -96,8 +95,8 @@ trying a server download first.
    the existing **Save reviewed recipe** button. Nothing is saved before review.
 
 Heading recognition supports Ingredients followed by Directions, Instructions,
-Method, or Preparation. It makes suggestions; it does not parse food quantities
-or promise to understand every page layout. The complete plain-text copy is
+Method, or Preparation. It makes section suggestions without promising to understand every page layout.
+Ingredient matching then processes those lines in the shared review form. The complete plain-text copy is
 kept in **Notes / original browser copy**, including preambles and unknown
 sections. If headings are missing, all text remains in Instructions and Notes;
 enter a title and move ingredient lines into Ingredients before saving. Notes

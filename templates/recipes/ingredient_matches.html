@@ -1,0 +1,45 @@
+{% load crispy_forms_tags %}
+<section aria-label="Ingredient matching">
+    <h2>Ingredients for grocery lists</h2>
+    <p>Matches use normalized names. New food names are created only when you save, with Imported as the default category.
+       Ranges retain both values; grocery lists use the upper amount after you confirm.</p>
+    {% if ingredient_formset %}
+    {{ ingredient_formset.management_form }}
+    {{ ingredient_formset.non_form_errors }}
+    {% for row in ingredient_formset %}
+    <fieldset class="content-section ingredient-match">
+        <legend class="h5">{{ forloop.counter }}. {{ row.original }}</legend>
+        {{ row.original_text }}{{ row.original_text.errors }}{{ row.non_field_errors }}
+        <details {% if row.warnings or row.show_new_food or row.errors %}open{% endif %}>
+            <summary class="py-2">Amount and food match</summary>
+            {% if row.warnings %}
+            <ul class="alert alert-warning pl-4">{% for warning in row.warnings %}<li>{{ warning }}</li>{% endfor %}</ul>
+            {% endif %}
+            <div class="form-row">
+                <div class="col-sm-6">{{ row.quantity|as_crispy_field }}</div>
+                <div class="col-sm-6">{{ row.unit|as_crispy_field }}</div>
+            </div>
+            {{ row.food|as_crispy_field }}
+            <details {% if row.show_new_food or row.new_food_name.errors %}open{% endif %}>
+                <summary class="py-2">Create or reuse a food by name</summary>
+                <p>If you choose an existing food above, its details are kept unchanged.</p>
+                {{ row.new_food_name|as_crispy_field }}
+                <details><summary class="py-2">Category / aisle for a new food (optional)</summary>
+                    {{ row.new_food_category|as_crispy_field }}{{ row.new_food_aisle|as_crispy_field }}
+                </details>
+            </details>
+            <details {% if row.quantity_max.value or row.preparation_notes.value or row.quantity_max.errors %}open{% endif %}>
+                <summary class="py-2">Range / preparation notes (optional)</summary>
+                {{ row.quantity_max|as_crispy_field }}{{ row.preparation_notes|as_crispy_field }}
+            </details>
+            {% if row.warnings or row.quantity_max.value or row.confirm_uncertain.errors %}
+                {{ row.confirm_uncertain|as_crispy_field }}
+            {% else %}{{ row.confirm_uncertain.as_hidden }}{% endif %}
+            {{ row.reference_only|as_crispy_field }}
+        </details>
+    </fieldset>
+    {% empty %}
+    <p>No ingredient lines found. Correct the original ingredient text and refresh suggestions.</p>
+    {% endfor %}
+    {% endif %}
+</section>

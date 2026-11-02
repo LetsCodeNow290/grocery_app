@@ -4,6 +4,10 @@
 
 
 <div class='content-section'>
+    {% if recipe.ingredient_review_exclusions %}<p>Reference-only ingredient lines will not be added.</p>{% endif %}
+    {% if recipe.ingredient_text and not recipe.ingredients.exists %}
+    <p><a href="{% url 'process_recipe_ingredients' pk=recipe.pk %}">Review ingredient matches</a> before shopping.</p>
+    {% endif %}
 
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}

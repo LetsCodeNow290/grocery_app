@@ -8,6 +8,7 @@ An existing Django recipe catalog and grocery-list builder, being modernized on
 - [Repository assessment and remaining Phase 1 work](docs/REPOSITORY_ASSESSMENT.md)
 - [Preserving and recovering legacy data](docs/DATA_RECOVERY.md)
 - [Online recipe importing](docs/RECIPE_IMPORTER.md)
+- [Automatic ingredient review and grocery lists](docs/INGREDIENT_PROCESSING.md)
 
 Use Python 3.12–3.14, Django 5.2 LTS, and PostgreSQL 16. Run tests before pushing:
 

@@ -1,4 +1,5 @@
 from django.db import models
+from recipes.units import UNITS
 from components.models import *
 
 RECIPE_RATING = (
@@ -19,7 +20,8 @@ class Recipe(models.Model):
     recipe_instructions = models.TextField(blank=True, null=True)
     source_url = models.URLField(max_length=2048, blank=True)
     ingredient_text = models.TextField(blank=True, help_text=(
-        'Original ingredient lines. Add foods and quantities separately for grocery lists.'))
+        'Original ingredient lines are retained alongside confirmed grocery-list ingredients.'))
+    ingredient_review_exclusions = models.JSONField(default=list, blank=True, editable=False)
     recipe_location = models.ForeignKey(
         'components.RecipeBook', on_delete=models.CASCADE, related_name='recipe_location', blank=True, null=True)
     location_page_number = models.IntegerField(blank=True, null=True)
@@ -36,24 +38,17 @@ class Recipe(models.Model):
         super().save(*args, **kwargs)
 
 
-UNITS = [
-    ('teaspoon(s)', 'teaspoon(s)'),
-    ('TABLESPOON(s)','TABLESPOON(s)'),
-    ('cup(s)', 'cup(s)'),
-    ('pint(s)', 'pint(s)'),
-    ('quart(s)', 'quart(s)'),
-    ('gallon(s)', 'gallon(s)'),
-    ('ounce(s)', 'ounce(s)'),
-    ('pound(s)', 'pound(s)'),
-    ('vegetable or fruit', 'vegetable or fruit'),
-    ('other', 'other'),
-]
+
 
 class Ingredient(models.Model):
     ingredient_name = models.ForeignKey(
         'components.Food', on_delete=models.CASCADE, related_name='ingredient_name')
     ingredient_quantity = models.FloatField()
     quantity_unit = models.CharField(max_length=20, choices=UNITS)
+
+    original_text = models.TextField(blank=True)
+    preparation_notes = models.TextField(blank=True)
+    quantity_max = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.ingredient_name.food_name

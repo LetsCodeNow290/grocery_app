@@ -1,27 +1,18 @@
 from django.db import models
+from recipes.units import UNITS, conversion_factor, add_quantities
 from components.models import Food
 from recipes.models import Recipe
 from datetime import datetime as dt
 from natsort import natsorted
 
 
-UNITS = [
-    ('teaspoon(s)', 'teaspoon(s)'),
-    ('TABLESPOON(s)','TABLESPOON(s)'),
-    ('cup(s)', 'cup(s)'),
-    ('pint(s)', 'pint(s)'),
-    ('quart(s)', 'quart(s)'),
-    ('gallon(s)', 'gallon(s)'),
-    ('ounce(s)', 'ounce(s)'),
-    ('pound(s)', 'pound(s)'),
-    ('vegetable or fruit', 'vegetable or fruit'),
-    ('other', 'other'),
-]
+
 
 class ChooseItem(models.Model):
     item_name = models.ForeignKey(
         Food, on_delete=models.CASCADE, related_name='item_name')
     item_quantity = models.FloatField()
+    item_notes = models.TextField(blank=True)
     item_quantity_unit = models.CharField(max_length=20, choices=UNITS, default='other')
 
     def __str__(self):
@@ -40,25 +31,23 @@ class GroceryList(models.Model):
 
 
     def make_list(self):
-        grocery_items = self.list_items.select_related('item_name__food_aisle', 'item_name__food_category')
-        grocery_item_list = [{
-            'food_name': item.item_name.food_name, 
-            "aisle": item.item_name.food_aisle.aisle_name if item.item_name.food_aisle else 'Unassigned',
-            "food_category": item.item_name.food_category.food_category_name, 
-            'quantity': item.item_quantity, 
-            'quantity_unit_name': item.item_quantity_unit
-            } for item in grocery_items]
-        #final_list = natsorted(grocery_item_list, key=lambda x: x['aisle'])
-        
-        #dictionary to index the new_list
-        names = {}
+        items = self.list_items.select_related('item_name__food_aisle', 'item_name__food_category').order_by('pk')
         new_list = []
-        for item in grocery_item_list:
-            if (item['food_name'],item['quantity_unit_name']) in names:
-                new_list[names[(item['food_name'],item['quantity_unit_name'])]]['quantity'] += item['quantity']   
+        identities = []
+        for item in items:
+            for index, (food_id, unit, notes) in enumerate(identities):
+                factor = conversion_factor(item.item_quantity_unit, unit)
+                if food_id == item.item_name_id and factor is not None and notes == item.item_notes:
+                    new_list[index]['quantity'] = add_quantities(
+                        new_list[index]['quantity'], item.item_quantity, factor)
+                    break
             else:
-                new_list.append(item.copy())
-                names[(item['food_name'],item['quantity_unit_name'])] = len(new_list)-1
+                identities.append((item.item_name_id, item.item_quantity_unit, item.item_notes))
+                new_list.append({
+                    'food_name': item.item_name.food_name,
+                    'aisle': item.item_name.food_aisle.aisle_name if item.item_name.food_aisle else 'Unassigned',
+                    'food_category': item.item_name.food_category.food_category_name,
+                    'quantity': item.item_quantity, 'quantity_unit_name': item.item_quantity_unit, 'notes': item.item_notes})
         # sort list by aisle
         temp_list = natsorted(new_list, key=lambda x: x['food_name'])
         final_list = natsorted(temp_list, key=lambda x: x['aisle'])

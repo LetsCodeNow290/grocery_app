@@ -5,10 +5,10 @@
 {% if review_form %}
     <h1>Review recipe</h1>
     <p>Check and edit the name, ingredients, and instructions before saving.</p>
-    <p>Ingredient quantities are kept as text. After saving, you can add foods and quantities for grocery lists.</p>
+    <p>Check the ingredient matches below. Confirmed foods and quantities will be ready for grocery lists.</p>
     <form method="post" class="mb-3">
         {% csrf_token %}
-        <input type="hidden" name="step" value="save">
+
         {% if review_hint %}<p class="alert alert-info" role="status">{{ review_hint }}</p>{% endif %}
         {{ review_form.non_field_errors }}
         {% for field in review_form %}
@@ -18,7 +18,10 @@
             <summary class="py-2">Notes / original browser copy (optional)</summary>
             {{ review_form.comments|as_crispy_field }}
         </details>
-        <button class="btn btn-primary" type="submit">Save reviewed recipe</button>
+        <button class="btn btn-outline-secondary mb-3" name="step" value="refresh_ingredients" type="submit" formnovalidate>Refresh ingredient suggestions</button>
+        <p>If you edit the ingredient text, refresh suggestions before saving.</p>
+        {% include 'recipes/ingredient_matches.html' %}
+        <button class="btn btn-primary" name="step" value="save" type="submit">Save reviewed recipe</button>
         <a class="btn btn-secondary" href="{% url 'recipe_import' %}">Cancel</a>
     </form>
 {% else %}

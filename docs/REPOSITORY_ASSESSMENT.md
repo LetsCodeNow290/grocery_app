@@ -67,8 +67,9 @@ available, so migration of the owner's actual installation is not yet verified.
 The follow-on [online importer MVP](RECIPE_IMPORTER.md) now provides safe public
 URL fetching, Recipe JSON-LD extraction, an editable review form, and saving into
 the existing Recipe model. Source attribution and raw ingredient text use two
-optional additive fields. Quantities/food mapping remain manual via the existing
-ingredient workflow; photo/PDF importing is still outstanding. The original
+optional additive fields. The follow-on [ingredient processing](INGREDIENT_PROCESSING.md) now proposes
+quantities/units and food matches, then saves confirmed Ingredient relationships
+for grocery lists. Photo/PDF importing is still outstanding. The original
 foundation findings above describe the repository before this increment.
 
 ## Next increments to reach operational Phase 1

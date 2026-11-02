@@ -68,7 +68,8 @@ category, aisle, foods, and a recipe category before entering recipes. Create a
 list, add foods or recipes, edit quantities, and download CSV. `/admin/` provides
 Django administration. URL recipe importing is available at `/recipe/import/`;
 see [RECIPE_IMPORTER.md](RECIPE_IMPORTER.md) for its review/save workflow and
-ingredient limitations. If a site blocks automatic downloads, use **Copy from
+ingredient limitations. Imported ingredients now have matching controls; see
+[INGREDIENT_PROCESSING.md](INGREDIENT_PROCESSING.md). If a site blocks automatic downloads, use **Copy from
 browser** on the same page to paste recipe text or supply a saved HTML/text file.
 Photo/PDF importing is not available yet.
 

@@ -60,12 +60,19 @@ class RecipeBook(models.Model):
 
     
 class Food(models.Model):
+    normalized_import_name = models.CharField(max_length=100, null=True, unique=True, editable=False)
     food_name = models.CharField(max_length=100)
     food_category = models.ForeignKey('FoodCategory', on_delete=models.CASCADE, related_name='food_category')
     food_aisle = models.ForeignKey('Aisle', on_delete=models.CASCADE, related_name='food_aisle', blank=True, null=True, default=Aisle.get_default_pk)
 
     def save(self, *args, **kwargs):
         self.food_name = self.food_name.title()
+        if self.normalized_import_name:
+            from recipes.ingredient_processing import normalize_food_name
+            if self.normalized_import_name != normalize_food_name(self.food_name):
+                self.normalized_import_name = None  # A renamed food no longer owns its old import key.
+                if kwargs.get('update_fields'):
+                    kwargs['update_fields'] = set(kwargs['update_fields']) | {'normalized_import_name'}
         super().save(*args, **kwargs)
 
     def __str__(self):

@@ -20,6 +20,12 @@ class GroceryListForm(forms.ModelForm):
         model = GroceryList
         fields = ['list_recipes']
     
+    def clean_list_recipes(self):
+        recipe = self.cleaned_data['list_recipes']
+        if recipe.ingredient_text.strip() and not recipe.ingredients.exists() and not recipe.ingredient_review_exclusions:
+            raise forms.ValidationError('Review this recipe’s ingredient matches before adding it to a grocery list.')
+        return recipe
+
     def save(self, commit=True):
         if not commit:
             raise ValueError('Adding a recipe requires commit=True.')

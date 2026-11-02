@@ -147,3 +147,6 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# At most 200 ingredient rows with bounded fields in the import-review formset.
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000

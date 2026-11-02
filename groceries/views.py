@@ -30,13 +30,15 @@ def add_to_list_main(request, pk):
             if recipe_form.is_valid():
                 recipe_form.save()
                 messages.success(request, 'Recipe ingredients are on the list.')
+                if recipe_form.cleaned_data['list_recipes'].ingredient_review_exclusions:
+                    messages.warning(request, 'Reference-only ingredient lines were not added to the grocery list.')
                 return redirect('add_to_list', pk=pk)
         else:
             item_form = ChooseItemForm(request.POST)
             if item_form.is_valid():
                 data = item_form.cleaned_data
                 add_item(grocery_list, data['item_name'], data['item_quantity'],
-                         data['item_quantity_unit'])
+                         data['item_quantity_unit'], data.get('item_notes', ''))
                 messages.success(request, 'Item added to the list.')
                 return redirect('add_to_list', pk=pk)
     return render(request, 'groceries/add_to_list.html', {
@@ -54,7 +56,7 @@ def print_list(request, pk):
     for item in obj:
         new_quantity = f'{item["quantity"]:g} {item["quantity_unit_name"]}'
         new_list.append(
-            {'aisle': item['aisle'], 'food_name': item['food_name'], 'quantity': new_quantity})
+            {'aisle': item['aisle'], 'food_name': item['food_name'] + (f" ({item['notes']})" if item.get('notes') else ''), 'quantity': new_quantity})
     recipe_list = [{'Recipes': str(x)} for x in grocery_list.list_recipes.all()]
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="{grocery_list.list_name}List.csv"'

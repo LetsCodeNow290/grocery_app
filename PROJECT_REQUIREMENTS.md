@@ -58,7 +58,8 @@ weekly additions, and store-specific shopping order on a mobile screen.
 The foundation restores and tests the existing workflows on modern Django, adds
 PostgreSQL configuration and CI, and documents setup and data recovery. The online
 recipe importer MVP now extracts Recipe JSON-LD into an editable
-review form and preserves ingredient text; numeric food/unit mapping remains
-manual. Photo/PDF importing, store-specific lists/aisles, offline support, and DEV
+review form and preserves ingredient text. Deterministic ingredient processing
+now proposes quantities/units and normalized food matches, with editable review
+and saving directly into grocery-list-ready Ingredient relationships. Photo/PDF importing, store-specific lists/aisles, offline support, and DEV
 hosting are still to be implemented; this is not the completed Phase 1.
 See `docs/REPOSITORY_ASSESSMENT.md` for findings and the next implementation steps.

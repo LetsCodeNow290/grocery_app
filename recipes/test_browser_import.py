@@ -6,6 +6,7 @@ from django.urls import reverse
 from .forms import RecipeBrowserImportForm
 from .importer import MAX_BYTES, RecipeImportError, extract_browser_content
 from .models import Recipe
+from .test_support import reviewed_payload
 
 SOURCE = 'https://www.allrecipes.com/recipe/275590/marry-me-chicken'
 # Invented recipe text with headings commonly copied from recipe websites.
@@ -155,7 +156,7 @@ class BrowserWorkflowTests(TestCase):
         draft = response.context['review_form'].initial
         self.assertEqual(draft['source_url'], SOURCE)
         data = {**draft, 'step': 'save', 'recipe_category': '', 'recipe_name': 'Reviewed skillet meal'}
-        self.client.post(reverse('recipe_import'), data)
+        self.client.post(reverse('recipe_import'), reviewed_payload(data))
         saved = Recipe.objects.get()
         self.assertEqual(saved.recipe_name, 'Reviewed Skillet Meal')
         self.assertEqual(saved.source_url, SOURCE)
@@ -213,8 +214,8 @@ class BrowserWorkflowTests(TestCase):
             'step': 'browser', 'source_url': SOURCE, 'content': text})
         self.assertContains(response, '&lt;img src=x onerror=alert(1)&gt;')
         self.assertNotContains(response, '<img src=x onerror=alert(1)>')
-        self.client.post(reverse('recipe_import'), {
-            **response.context['review_form'].initial, 'step': 'save'})
+        self.client.post(reverse('recipe_import'), reviewed_payload({
+            **response.context['review_form'].initial, 'step': 'save'}))
         detail = self.client.get(reverse('recipe_detail', args=[Recipe.objects.get().pk]))
         self.assertContains(detail, '&lt;img src=x onerror=alert(1)&gt;')
         self.assertNotContains(detail, '<img src=x onerror=alert(1)>')

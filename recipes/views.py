@@ -58,10 +58,17 @@ def recipe_to_list(request, pk):
     recipe = get_object_or_404(Recipe, pk=pk)
     form = RecipeToList(request.POST if request.method == 'POST' else None)
     if request.method == 'POST' and form.is_valid():
-        add_recipe(form.cleaned_data['choose_a_list'], recipe)
-        messages.success(request, f'{recipe} added to {form.cleaned_data["choose_a_list"]}')
-        return redirect('recipe_list')
-    return render(request, 'recipes/recipe_to_list_form.html', {'form': form})
+        from django.core.exceptions import ValidationError
+        try:
+            add_recipe(form.cleaned_data['choose_a_list'], recipe)
+        except ValidationError as error:
+            form.add_error(None, error)
+        else:
+            messages.success(request, f'{recipe} added to {form.cleaned_data["choose_a_list"]}')
+            if recipe.ingredient_review_exclusions:
+                messages.warning(request, 'Reference-only ingredient lines were not added to the grocery list.')
+            return redirect('recipe_list')
+    return render(request, 'recipes/recipe_to_list_form.html', {'form': form, 'recipe': recipe})
 
 
 class RecipeFilterList(FilterView):
@@ -146,19 +153,36 @@ def recipe_import(request):
     browser_open = False
     browser_advanced_open = False
     review_hint = ''
+    ingredient_formset = None
+    from .ingredient_review import matching_formset, save_ingredient_review
+    from django.core.exceptions import ValidationError
     if request.method == 'POST':
-        if request.POST.get('step') == 'save':
+        if request.POST.get('step') in ('save', 'refresh_ingredients'):
             review_form = RecipeImportReviewForm(request.POST)
-            if review_form.is_valid():
-                with transaction.atomic():
-                    recipe = review_form.save(commit=False)
-                    if recipe.recipe_category_id is None:
-                        recipe.recipe_category, _ = RecipeCategory.objects.get_or_create(
-                            recipe_category_name='Imported')
-                    recipe.recipe_rating = "Haven't Made it Yet"
-                    recipe.save()
-                messages.success(request, 'Recipe saved. Ingredient text is preserved; add foods and quantities to use it in grocery lists.')
-                return redirect('recipe_detail', pk=recipe.pk)
+            refreshing = request.POST.get('step') == 'refresh_ingredients'
+            try:
+                ingredient_formset = matching_formset(
+                    request.POST.get('ingredient_text', '')[:100001], None if refreshing else request.POST)
+            except ValueError as error:
+                review_form.is_valid()
+                review_form.add_error('ingredient_text', str(error))
+            if refreshing:
+                review_hint = 'Ingredient suggestions refreshed. Check all lines before saving.'
+            elif review_form.is_valid() and ingredient_formset is not None and ingredient_formset.is_valid():
+                try:
+                    with transaction.atomic():
+                        recipe = review_form.save(commit=False)
+                        if recipe.recipe_category_id is None:
+                            recipe.recipe_category, _ = RecipeCategory.objects.get_or_create(
+                                recipe_category_name='Imported')
+                        recipe.recipe_rating = "Haven't Made it Yet"
+                        recipe.save()
+                        save_ingredient_review(recipe, ingredient_formset)
+                except ValidationError as error:
+                    review_form.add_error(None, error)
+                else:
+                    messages.success(request, 'Recipe and confirmed ingredients saved. You can add this recipe to a grocery list.')
+                    return redirect('recipe_detail', pk=recipe.pk)
         elif request.POST.get('step') == 'browser':
             browser_open = True
             browser_advanced_open = bool(request.FILES)
@@ -189,7 +213,36 @@ def recipe_import(request):
                     browser_form = RecipeBrowserImportForm(initial={'source_url': source_url})
                 else:
                     review_form = RecipeImportReviewForm(initial=draft)
+    if review_form is not None and ingredient_formset is None and not review_form.is_bound:
+        if not review_form.initial.get('comments'):
+            review_form.initial['comments'] = review_form.initial.get('ingredient_text', '')
+        try:
+            ingredient_formset = matching_formset(review_form.initial.get('ingredient_text', ''))
+        except ValueError as error:
+            review_hint = str(error)
     return render(request, 'recipes/recipe_import.html', {
         'url_form': url_form, 'review_form': review_form,
         'browser_form': browser_form, 'browser_open': browser_open,
-        'browser_advanced_open': browser_advanced_open, 'review_hint': review_hint})
+        'browser_advanced_open': browser_advanced_open, 'review_hint': review_hint,
+        'ingredient_formset': ingredient_formset})
+
+
+def process_recipe_ingredients(request, pk):
+    from .ingredient_review import matching_formset, save_ingredient_review
+    from django.core.exceptions import ValidationError
+    recipe = get_object_or_404(Recipe, pk=pk)
+    if recipe.ingredients.exists() or not recipe.ingredient_text.strip():
+        messages.info(request, 'Existing ingredients are kept unchanged. There is no unprocessed ingredient text to review.')
+        return redirect('recipe_detail', pk=pk)
+    error = ''
+    formset = None
+    try:
+        formset = matching_formset(recipe.ingredient_text, request.POST if request.method == 'POST' else None)
+        if request.method == 'POST' and formset.is_valid():
+            save_ingredient_review(recipe, formset)
+            messages.success(request, 'Confirmed ingredients saved. This recipe is ready for grocery lists.')
+            return redirect('recipe_detail', pk=pk)
+    except (ValueError, ValidationError) as exception:
+        error = str(exception)
+    return render(request, 'recipes/recipe_ingredient_review.html', {
+        'recipe': recipe, 'ingredient_formset': formset, 'processing_error': error})

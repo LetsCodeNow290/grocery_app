@@ -53,6 +53,7 @@ urlpatterns = [
     path('home_admin/', admin_view, name='home_admin'),
     path('recipe/', start_recipe, name='start_recipe'),
     path('recipe/import/', recipe_import, name='recipe_import'),
+    path('recipe_list/<int:pk>/process_ingredients/', process_recipe_ingredients, name='process_recipe_ingredients'),
     path('recipe/<int:pk>/add_ingredient',
          add_ingredient, name='add_ingredients'),
     path('recipe_list/', RecipeFilterList.as_view(), name='recipe_list'),
