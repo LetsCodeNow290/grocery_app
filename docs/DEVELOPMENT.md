@@ -66,7 +66,9 @@ python manage.py runserver 127.0.0.1:8000
 Open <http://localhost:8000> in Windows. Use Manage Database to create a food
 category, aisle, foods, and a recipe category before entering recipes. Create a
 list, add foods or recipes, edit quantities, and download CSV. `/admin/` provides
-Django administration. Automatic imports are not available yet.
+Django administration. URL recipe importing is available at `/recipe/import/`;
+see [RECIPE_IMPORTER.md](RECIPE_IMPORTER.md) for its review/save workflow and
+ingredient limitations. Photo/PDF importing is not available yet.
 
 For an **existing database**, follow [DATA_RECOVERY.md](DATA_RECOVERY.md) before
 applying migrations or loading fixtures. Do not run `initialize_data.py` or

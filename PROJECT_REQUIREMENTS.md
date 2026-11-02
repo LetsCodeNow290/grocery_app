@@ -56,7 +56,9 @@ weekly additions, and store-specific shopping order on a mobile screen.
 ## Foundation delivery status
 
 The foundation restores and tests the existing workflows on modern Django, adds
-PostgreSQL configuration and CI, and documents setup and data recovery. Automatic
-photo/PDF/URL importing, store-specific lists/aisles, offline support, and DEV
-hosting are still to be implemented; this foundation is not the completed Phase 1.
+PostgreSQL configuration and CI, and documents setup and data recovery. The online
+recipe importer MVP now extracts Recipe JSON-LD into an editable
+review form and preserves ingredient text; numeric food/unit mapping remains
+manual. Photo/PDF importing, store-specific lists/aisles, offline support, and DEV
+hosting are still to be implemented; this is not the completed Phase 1.
 See `docs/REPOSITORY_ASSESSMENT.md` for findings and the next implementation steps.

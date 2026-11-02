@@ -52,3 +52,38 @@ class RecipeFilter(django_filters.FilterSet):
 class RecipeToList(forms.Form):
     choose_a_list = forms.ModelChoiceField(
         GroceryList.objects.all().order_by('-id'), empty_label=None)
+
+
+class RecipeImportURLForm(forms.Form):
+    url = forms.URLField(label='Recipe website URL', max_length=2048,
+                        widget=forms.URLInput(attrs={'placeholder': 'https://…'}))
+
+
+class RecipeImportReviewForm(RecipeForm):
+    recipe_category = forms.ModelChoiceField(
+        queryset=RecipeCategory.objects.all(), required=False,
+        empty_label='Imported (default category)')
+    ingredient_text = forms.CharField(label='Ingredients', max_length=100000,
+                                     widget=forms.Textarea(attrs={'rows': 12}))
+    recipe_instructions = forms.CharField(label='Instructions', max_length=100000,
+                                         widget=forms.Textarea(attrs={'rows': 12}))
+
+    class Meta(RecipeForm.Meta):
+        fields = ['source_url', 'recipe_name', 'recipe_category',
+                  'ingredient_text', 'recipe_instructions']
+        exclude = []
+
+    def clean_recipe_name(self):
+        name = self.cleaned_data['recipe_name']
+        if Recipe.objects.filter(recipe_name__iexact=name).exists():
+            raise forms.ValidationError('This recipe already exists. Choose a different name.')
+        return name
+
+    def clean_source_url(self):
+        url = self.cleaned_data['source_url']
+        if not url:
+            raise forms.ValidationError('Keep the recipe source URL for attribution.')
+        from urllib.parse import urlsplit
+        if urlsplit(url).scheme not in ('http', 'https'):
+            raise forms.ValidationError('Use an HTTP or HTTPS source URL.')
+        return url

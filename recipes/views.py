@@ -88,6 +88,8 @@ class RecipeUpdate(UpdateView):
         'recipe_rating',
         'recipe_image',
         'recipe_instructions',
+        'source_url',
+        'ingredient_text',
         'recipe_location',
         'location_page_number'
     ]
@@ -129,3 +131,37 @@ class RecipeDelete(DeleteView):
 
 class RecipeDetail(DetailView):
     model = Recipe
+
+
+def recipe_import(request):
+    from django.db import transaction
+    from components.models import RecipeCategory
+    from .forms import RecipeImportURLForm, RecipeImportReviewForm
+    from .importer import RecipeImportError, import_url
+
+    url_form = RecipeImportURLForm()
+    review_form = None
+    if request.method == 'POST':
+        if request.POST.get('step') == 'save':
+            review_form = RecipeImportReviewForm(request.POST)
+            if review_form.is_valid():
+                with transaction.atomic():
+                    recipe = review_form.save(commit=False)
+                    if recipe.recipe_category_id is None:
+                        recipe.recipe_category, _ = RecipeCategory.objects.get_or_create(
+                            recipe_category_name='Imported')
+                    recipe.recipe_rating = "Haven't Made it Yet"
+                    recipe.save()
+                messages.success(request, 'Recipe saved. Ingredient text is preserved; add foods and quantities to use it in grocery lists.')
+                return redirect('recipe_detail', pk=recipe.pk)
+        else:
+            url_form = RecipeImportURLForm(request.POST)
+            if url_form.is_valid():
+                try:
+                    draft = import_url(url_form.cleaned_data['url'])
+                except RecipeImportError as error:
+                    url_form.add_error('url', str(error))
+                else:
+                    review_form = RecipeImportReviewForm(initial=draft)
+    return render(request, 'recipes/recipe_import.html', {
+        'url_form': url_form, 'review_form': review_form})

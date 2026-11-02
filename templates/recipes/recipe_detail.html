@@ -11,13 +11,20 @@
             <h2>{{ recipe.recipe_name }}</h2><br>
             <h3>Rating: {{ recipe.recipe_rating }}</h3>
             <div class="article-metadata">
+                {% if recipe.source_url %}<p>Source: <a href="{{ recipe.source_url }}" rel="noopener noreferrer">{{ recipe.source_url }}</a></p>{% endif %}
+                {% if recipe.ingredient_text %}
+                <h4>Ingredient text</h4>
+                <p class="article-content">{{ recipe.ingredient_text }}</p>
+                <p>These ingredient lines are saved as text. To include them in grocery lists,
+                    <a href="{% url 'add_ingredients' pk=recipe.pk %}">add foods and quantities</a>.</p>
+                {% endif %}
                 <p class="article-content">
                 <h4>Recipe Category:</h4> {{ recipe.recipe_category }}</p>
                 
                     {% if recipe.recipe_instructions == "" %}
                     {% else %}
                     <p class="article-content"></p>
-                <h4>Instructions:</h4> {{ recipe.recipe_instructions }}</p>
+                <h4>Instructions:</h4><p class="article-content">{{ recipe.recipe_instructions }}</p>
 {% endif %}
                 <p class="article-content">
                 <h4>Recipe Book:</h4> <strong>{{ recipe.recipe_location }}</strong> on page

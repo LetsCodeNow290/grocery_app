@@ -7,6 +7,7 @@ An existing Django recipe catalog and grocery-list builder, being modernized on
 - [Fresh WSL Ubuntu development setup](docs/DEVELOPMENT.md)
 - [Repository assessment and remaining Phase 1 work](docs/REPOSITORY_ASSESSMENT.md)
 - [Preserving and recovering legacy data](docs/DATA_RECOVERY.md)
+- [Online recipe importing](docs/RECIPE_IMPORTER.md)
 
 Use Python 3.12–3.14, Django 5.2 LTS, and PostgreSQL 16. Run tests before pushing:
 

@@ -62,6 +62,15 @@ static collection. The [GitHub Actions matrix](https://github.com/LetsCodeNow290
 also passed all four Python/database combinations. Automated template rendering is not browser/device acceptance testing. No old live database was
 available, so migration of the owner's actual installation is not yet verified.
 
+## Online importer update
+
+The follow-on [online importer MVP](RECIPE_IMPORTER.md) now provides safe public
+URL fetching, Recipe JSON-LD extraction, an editable review form, and saving into
+the existing Recipe model. Source attribution and raw ingredient text use two
+optional additive fields. Quantities/food mapping remain manual via the existing
+ingredient workflow; photo/PDF importing is still outstanding. The original
+foundation findings above describe the repository before this increment.
+
 ## Next increments to reach operational Phase 1
 
 1. Locate and back up the authoritative database and uploaded media. Inspect its
@@ -70,9 +79,9 @@ available, so migration of the owner's actual installation is not yet verified.
 2. Implement a reviewable import draft: source URL/file, raw extracted text,
    normalized ingredients with food matching, editable quantities/units, and
    instructions. Save confirmed drafts transactionally into the existing models.
-3. Add URL import from Recipe structured data with bounded fetches, safe public
-   URL validation (including redirects/address resolution), timeouts, and clear
-   unsupported-site errors. Do not silently download arbitrary network resources.
+3. Extend the implemented URL importer only as needed based on site acceptance
+   testing. The MVP already bounds public fetches, checks redirects, pins validated
+   addresses, and reports unsupported-site errors.
 4. Add photo OCR and PDF text extraction/OCR fallback behind a replaceable
    extraction interface. Decide local vs. hosted extraction based on privacy,
    accuracy, and operating cost. Keep originals; enforce type/size/page limits.

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="content-section">
+{% if review_form %}
+    <h1>Review recipe</h1>
+    <p>Check and edit the name, ingredients, and instructions before saving.</p>
+    <p>Ingredient quantities are kept as text. After saving, you can add foods and quantities for grocery lists.</p>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="step" value="save">
+        {{ review_form|crispy }}
+        <button class="btn btn-primary" type="submit">Save reviewed recipe</button>
+        <a class="btn btn-secondary" href="{% url 'recipe_import' %}">Cancel</a>
+    </form>
+{% else %}
+    <h1>Import a recipe</h1>
+    <p>Paste a public recipe page URL. You’ll review the extracted recipe before anything is saved.</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ url_form|crispy }}
+        <button class="btn btn-primary" type="submit">Extract recipe</button>
+    </form>
+    <p>Works with websites that publish Recipe JSON-LD. Some sites block downloads or require JavaScript.</p>
+    <a href="{% url 'start_recipe' %}">Enter a recipe manually</a>
+{% endif %}
+</div>
+{% endblock %}

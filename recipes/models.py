@@ -17,6 +17,9 @@ class Recipe(models.Model):
     recipe_image = models.ImageField(
         blank=True, null=True, default="default.jpg", upload_to="recipe_pics/")
     recipe_instructions = models.TextField(blank=True, null=True)
+    source_url = models.URLField(max_length=2048, blank=True)
+    ingredient_text = models.TextField(blank=True, help_text=(
+        'Original ingredient lines. Add foods and quantities separately for grocery lists.'))
     recipe_location = models.ForeignKey(
         'components.RecipeBook', on_delete=models.CASCADE, related_name='recipe_location', blank=True, null=True)
     location_page_number = models.IntegerField(blank=True, null=True)

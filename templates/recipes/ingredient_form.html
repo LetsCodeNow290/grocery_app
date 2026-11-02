@@ -8,6 +8,7 @@
         {% csrf_token %}
         <fieldset class='form-group'>
             <legend class="border-bottom mb-4">Add ingredients to the recipe <strong>{{ data }}</strong></legend>
+            {{ form.non_field_errors }}
             {{ form.ingredient_name|as_crispy_field }}
             <div class="form-row">
                 {{ form.whole_number_quantitiy|as_crispy_field}} 
@@ -30,6 +31,11 @@
 {% block content2 %}
 
 <div class="content-section">
+    {% if data.ingredient_text %}
+    <h2>Imported ingredient text</h2>
+    <p class="article-content">{{ data.ingredient_text }}</p>
+    <p>Use these lines as a reference when adding each food, quantity, and unit.</p>
+    {% endif %}
     <h2>All of the Ingredients</h2>
    
     <p class="article-content"> {% for ingred in data.ingredients.all %}
